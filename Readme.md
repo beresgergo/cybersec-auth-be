@@ -80,6 +80,20 @@ To launch the tests follow the steps below
 ## Components
 
 Each component is dockerized NodeJs application, using ExpressJS framework to provide REST interface. Also every component has a clearly separated and defined domain. This is the way I would like to achieve the microservice architecture.
+Every component will follow the ExpressJS project layout recommendation
+- _Project root_
+	- controllers
+		- Controller1.js
+	- routes
+		- Routes.js
+	- services
+		- BusinessLogic.js
+	- tests
+	- Dockerfile
+	- package.json
+	- package-lock.json
+	- app.js
+
 
 ### Entrypoint
 This component is responsible for exposing REST endpoints of the servers and acts as an entrypoint. Other components are only allowed to be called by this component and each other.
