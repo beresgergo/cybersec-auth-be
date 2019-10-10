@@ -5,12 +5,49 @@ The project is heavily work in progress, initial focus is on architecture over b
 ## Installation
 ### Application dependencies
 The backend is running inside multiple Docker container, following the microservice architecture, orchestration is done with docker-compose. You only need these two components to start up the application.
-- (Docker Desktop)[https://docs.docker.com/docker-for-mac/install/]
-- (docker-compose)[https://docs.docker.com/compose/install/]
+- [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
+- [docker-compose](https://docs.docker.com/compose/install/)
+
+## Usage
+### Start the containers
+To start the docker containers execute the following commands in your console
+
+	$ docker-compose build
+	....
+	$ docker-compose up
+	Creating network "cybersec-auth-be_node_net" with driver "bridge"
+	Creating cyber-auth-be-auth ... done
+	Creating cyber-auth-be-proxy ... done
+	Attaching to cyber-auth-be-auth, cyber-auth-be-proxy
+	cyber-auth-be-auth |
+	cyber-auth-be-auth | > cyber-auth-be-auth@1.0.0 start /usr/src/app
+	cyber-auth-be-auth | > node express-auth.js
+	cyber-auth-be-auth |
+	cyber-auth-be-proxy |
+	cyber-auth-be-proxy | > cyber-auth-be-proxy@1.0.0 start /usr/src/app
+	cyber-auth-be-proxy | > node express-proxy.js
+	cyber-auth-be-proxy |
+
 
 ### System tests
+For the current setup the [mocha](https://mochajs.org) test runner is used with the [chai](https://www.chaijs.com) assertion library.
+With chai one can write his own tests in BDD style which is way more human readable.
+Test suite for a component is called a spec, and reside under system-test/tests/__COMPONENT_NAME__.spec.js. A simple test suite looks like:
+
+	describe('#GET ping', function() {
+		it('should always return status OK', function(done) {
+			requester
+				.get('/ping')
+				.then(function(res) {
+					expect(res.body.status).to.be.eq('OK');
+					done();
+				});
+		});
+	});
+
 Until the client is implemented, the backend functionality is verified with unit and system tests. In order to run the system tests, you should have the containers running (see below).
 To launch the tests follow the steps below
+
 
 	$ cd <local_checkout>/system-test
 	$  npm install --only=dev
@@ -40,34 +77,20 @@ To launch the tests follow the steps below
 
 	  5 passing (125ms)
 
-## Usage
-To start the docker containers execute the following commands in your console
-
-	$ docker-compose build
-	....
-	$ docker-compose up
-	Creating network "cybersec-auth-be_node_net" with driver "bridge"
-	Creating cyber-auth-be-auth ... done
-	Creating cyber-auth-be-proxy ... done
-	Attaching to cyber-auth-be-auth, cyber-auth-be-proxy
-	cyber-auth-be-auth |
-	cyber-auth-be-auth | > cyber-auth-be-auth@1.0.0 start /usr/src/app
-	cyber-auth-be-auth | > node express-auth.js
-	cyber-auth-be-auth |
-	cyber-auth-be-proxy |
-	cyber-auth-be-proxy | > cyber-auth-be-proxy@1.0.0 start /usr/src/app
-	cyber-auth-be-proxy | > node express-proxy.js
-	cyber-auth-be-proxy |
-
 ## Components
+
+Each component is dockerized NodeJs application, using ExpressJS framework to provide REST interface. Also every component has a clearly separated and defined domain. This is the way I would like to achieve the microservice architecture.
+
 ### Entrypoint
 This component is responsible for exposing REST endpoints of the servers and acts as an entrypoint. Other components are only allowed to be called by this component and each other.
-This is achieved by implementing mutual SSL authentication. The CA and component certificates are also checked in. Generally this considered to be the BADEST practice, however
-for demonstration purposes this should be fine. Additional responsibilites besides
+This is achieved by implementing mutual SSL authentication. The CA and component certificates are also checked into version control. Generally this considered to be the BADEST practice, however
+for demonstration purposes this should be fine. This component is also responsible for input validation.
+
 Implementation in progress
 
 ### Authentication
 Component is responsible for creating and validating JWT tokens which is necessary to reach the services provided by the **Protected** component.
+
 Implementation in progress
 
 ### Protected
