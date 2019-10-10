@@ -10,6 +10,7 @@ The backend is running inside multiple Docker container, following the microserv
 
 ## Usage
 ### Start the containers
+First clone the repository, then navigate to the root of your local checkout.
 To start the docker containers execute the following commands in your console
 
 	$ docker-compose build
