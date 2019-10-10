@@ -4,7 +4,7 @@ The project is heavily work in progress, initial focus is on architecture over b
 
 ## Installation
 ### Application dependencies
-The backend is running inside a Docker container, the orchestration is done with docker-compose. You only need these two components to start up the application.
+The backend is running inside multiple Docker container, following the microservice architecture, orchestration is done with docker-compose. You only need these two components to start up the application.
 - (Docker Desktop)[https://docs.docker.com/docker-for-mac/install/]
 - (docker-compose)[https://docs.docker.com/compose/install/]
 
@@ -58,3 +58,22 @@ To start the docker containers execute the following commands in your console
 	cyber-auth-be-proxy | > cyber-auth-be-proxy@1.0.0 start /usr/src/app
 	cyber-auth-be-proxy | > node express-proxy.js
 	cyber-auth-be-proxy |
+
+## Components
+### Entrypoint
+This component is responsible for exposing REST endpoints of the servers and acts as an entrypoint. Other components are only allowed to be called by this component and each other.
+This is achieved by implementing mutual SSL authentication. The CA and component certificates are also checked in. Generally this considered to be the BADEST practice, however
+for demonstration purposes this should be fine. Additional responsibilites besides
+Implementation in progress
+
+### Authentication
+Component is responsible for creating and validating JWT tokens which is necessary to reach the services provided by the **Protected** component.
+Implementation in progress
+
+### Protected
+Component provides protected services, only accessible with valid JWT tokens.
+To be implemented
+
+### Registration
+Components provides services for user management and enrollment.
+To be implemented
