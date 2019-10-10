@@ -79,7 +79,7 @@ To launch the tests follow the steps below
 
 ## Components
 
-Each component is dockerized NodeJs application, using ExpressJS framework to provide REST interface. Also every component has a clearly separated and defined domain. This is the way I would like to achieve the microservice architecture.
+Each component is dockerized [NodeJs](https://nodejs.org/en/) application, using [ExpressJS](https://expressjs.com) framework to provide REST interface. Also every component has a clearly separated and defined domain. This is the way I would like to achieve the microservice architecture.
 Every component will follow the ExpressJS project layout recommendation
 - _Project root_
 	- controllers
@@ -103,7 +103,7 @@ for demonstration purposes this should be fine. This component is also responsib
 Implementation in progress
 
 ### Authentication
-Component is responsible for creating and validating JWT tokens which is necessary to reach the services provided by the **Protected** component.
+Component is responsible for creating and validating [JSON Web Tokens](https://jwt.io) which is necessary to reach the services provided by the **Protected** component.
 
 Implementation in progress
 
