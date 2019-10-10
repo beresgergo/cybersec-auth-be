@@ -1,0 +1,36 @@
+version: '3'
+services:
+  entrypoint:
+    image: gergob/cyber-auth-be-proxy
+    container_name: cyber-auth-be-proxy
+    build: ./proxy
+    ports:
+     - "8080:8080"
+     - "9229:9229"
+    networks:
+      - node_net
+    links:
+      - auth
+    depends_on:
+      - auth
+    volumes:
+      - ./ssl/cyberauth_proxy.crt:/var/opt/certs/cyberauth_proxy.crt:ro
+      - ./ssl/cyberauth_proxy.key:/var/opt/certs/cyberauth_proxy.key:ro
+      - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
+    environment:
+      - LOG_LEVEL=1
+  auth:
+    networks:
+      - node_net
+    image: gergob/cyber-auth-be-auth
+    container_name: cyber-auth-be-auth
+    build: ./auth
+    ports:
+     - "8081:8000"
+    volumes:
+      - ./ssl/cyberauth_auth.crt:/var/opt/certs/cyberauth_auth.crt:ro
+      - ./ssl/cyberauth_auth.key:/var/opt/certs/cyberauth_auth.key:ro
+      - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
+networks:
+  node_net:
+    driver: bridge

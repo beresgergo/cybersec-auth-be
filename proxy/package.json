@@ -1,0 +1,27 @@
+{
+  "name": "cyber-auth-be-proxy",
+  "version": "1.0.0",
+  "description": "Simple docker application demonstarting different authentication methods. Component is responsible for creating the entrypoint for the application.",
+  "main": "express-proxy.js",
+  "scripts": {
+    "test": "test",
+    "start": "node express-proxy.js",
+    "start-debug": "node --inspect=0.0.0.0 express-proxy.js",
+    "lint": "eslint ."
+  },
+  "author": "Gergely Beres",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.1",
+    "node-input-validator": "^4.1.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^6.5.0"
+  }
+}
