@@ -9,6 +9,7 @@ describe('AuthenticationService', function() {
             expect(authToken).to.be.equal('authToken');
         });
     });
+
     describe('#validateToken', function() {
         it('should resolve the promise if the input is authToken', function(done) {
             const promise = authenticationService.validateToken('authToken');
