@@ -4,7 +4,7 @@
   "description": "Simple docker application demonstarting different authentication methods. Component is responsible for creating the entrypoint for the application.",
   "main": "express-auth.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --recursive",
     "start": "node express-auth.js",
     "lint": "eslint ."
   },
@@ -19,7 +19,9 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^6.5.0",
-    "mocha": "^7.1.1"
+    "mocha": "^7.1.1",
+    "mockery": "^2.1.0",
+    "node-mocks-http": "^1.8.1"
   },
   "repository": {
     "type": "git",
