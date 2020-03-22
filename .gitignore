@@ -1,1 +1,5 @@
 .DS_Store
+.idea
+ssl/cyberauth_auth.*
+ssl/cyberauth_ca.*
+ssl/cyberauth_proxy.*
