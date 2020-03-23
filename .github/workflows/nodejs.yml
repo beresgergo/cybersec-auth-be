@@ -20,7 +20,21 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
-    - run: cd auth && npm install && npm test && npm audit && npm run lint
-    - run: cd proxy && npm install && npm test && npm audit && npm run lint
+    - name: Install npm dependencies for auth component
+      run: cd auth && npm install
+    - name: Execute tests for auth component
+      run: cd auth && npm test
+    - name: Execute npm audit on auth component
+      run: cd auth && npm audit
+    - name: Execute ESLint on auth component
+      run: cd auth && npm run lint
+    - name: Install npm dependencies for proxy component
+      run: cd proxy && npm install
+    - name: Execute tests for proxy component
+      run: cd proxy && npm test
+    - name: Execute npm audit on proxy component
+      run: cd proxy && npm audit
+    - name: Execute ESLint on proxy component
+      run: cd proxy && npm run lint
       env:
         CI: true

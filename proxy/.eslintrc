@@ -1,16 +1,24 @@
 {
-	"extends": "eslint:recommended",
-	"parserOptions": {
-		"ecmaVersion": 2017
-	},
-	"env": {
-		"mocha": true,
-		"es6": true,
-		"node": true
-	},
-	"globals": {},
-	"rules": {
-		"quotes": [2, "single"],
-		"no-unused-vars" : [0, { "varsIgnorePattern": "_" }]
-	}
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "env": {
+    "mocha": true,
+    "es6": true,
+    "node": true
+  },
+  "globals": {},
+  "rules": {
+    "quotes": [
+      2,
+      "single"
+    ],
+    "no-unused-vars": [
+      0,
+      {
+        "varsIgnorePattern": "_"
+      }
+    ]
+  }
 }
