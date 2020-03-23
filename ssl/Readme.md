@@ -11,6 +11,7 @@ To simulate the PKI
 - then we can create the keys for each component that will be signed with the previously created CA private key
 
 
+
 	cd <local_checkout>/ssl 
 	./create_ca_certificate.sh
 	Generating RSA private key, 2048 bit long modulus
