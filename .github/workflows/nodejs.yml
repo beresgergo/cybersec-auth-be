@@ -24,7 +24,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd auth && npm install &&npm test
-    - run: cd ../proxy && npm install && npm test
+    - run: cd auth && npm install && npm test && npm audit
+    - run: cd ../proxy && npm install && npm test && npm audit
       env:
         CI: true
