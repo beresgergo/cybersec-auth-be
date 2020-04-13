@@ -23,6 +23,8 @@ mockery.registerMock('uuid', {
     v4: () => { return '1'; }
 });
 
+mockery.registerMock('../config/index', {});
+
 const sessionController = require('../../controllers/sessionController');
 
 describe('SessionController', function() {
