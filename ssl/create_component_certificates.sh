@@ -13,3 +13,4 @@ openssl x509 -req -in "$1.csr" -CA cyberauth_ca.crt -CAkey cyberauth_ca.key -CAc
 
 create_key_and_certificate_for_component "cyberauth_proxy" "Proxy" "proxy"
 create_key_and_certificate_for_component "cyberauth_auth" "Authentication" "auth"
+create_key_and_certificate_for_component "cyberauth_registration" "Registration" "registration"

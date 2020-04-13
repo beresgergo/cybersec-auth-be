@@ -22,7 +22,7 @@ To start the docker containers execute the following commands in your console
 	Attaching to cyber-auth-be-auth, cyber-auth-be-proxy
 	cyber-auth-be-auth |
 	cyber-auth-be-auth | > cyber-auth-be-auth@1.0.0 start /usr/src/app
-	cyber-auth-be-auth | > node express-auth.js
+	cyber-auth-be-auth | > node express-registration.js
 	cyber-auth-be-auth |
 	cyber-auth-be-proxy |
 	cyber-auth-be-proxy | > cyber-auth-be-proxy@1.0.0 start /usr/src/app
