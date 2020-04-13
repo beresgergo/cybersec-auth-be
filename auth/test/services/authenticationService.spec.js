@@ -26,10 +26,10 @@ describe('AuthenticationService', function() {
         it('should reject the promise if the input is not authToken', function(done) {
             const promise = authenticationService.validateToken('');
             promise.then(() => {
+                // TO verify this is not even called
                 expect(true).to.be.false;
                 done();
             }, () => {
-                // TO verify this is not even called
                 expect(true).to.be.true;
                 done();
             });
