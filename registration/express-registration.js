@@ -2,7 +2,6 @@
 
 const express = require('express');
 const https = require('https');
-const fs = require('fs');
 const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 const helmet = require('helmet');
@@ -31,12 +30,6 @@ app.use('/', routes);
 
 app.use(expressWinston.errorLogger(CONFIGURATION.LOGGING_OPTIONS));
 
-const credentials = {
-    key: fs.readFileSync('/var/opt/certs/cyberauth_registration.key'),
-    cert: fs.readFileSync('/var/opt/certs/cyberauth_registration.crt'),
-    ca: fs.readFileSync('/var/opt/certs/cyberauth_ca.crt'),
-    requestCert: true,
-    rejectUnauthorized: true
-};
 
-https.createServer(credentials, app).listen(8000);
+
+https.createServer(CONFIGURATION.CREDENTIALS, app).listen(8000);

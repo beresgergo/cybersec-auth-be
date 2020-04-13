@@ -1,24 +1,32 @@
-'use strict'
+'use strict';
 
 const express = require('express');
-const https = require('https')
-const fs = require('fs');
+const https = require('https');
 const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 const helmet = require('helmet');
+const CONFIGURATION = require('./config/index');
+const mongoose = require('mongoose');
 
+const winston = require('winston');
+const expressWinston = require('express-winston');
+const LOG = winston.createLogger(CONFIGURATION.LOGGING_OPTIONS);
 const app = express();
 
 app.use(helmet());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.use(expressWinston.logger(CONFIGURATION.LOGGING_OPTIONS));
+
+mongoose
+    .connect(CONFIGURATION.SESSION_STORE_URL, CONFIGURATION.MONGOOSE_OPTIONS)
+    .then(() => {
+        LOG.info('Connection to DB established.');
+    });
 
 app.use('/', routes);
 
-const credentials = {
-	key: fs.readFileSync('/var/opt/certs/cyberauth_proxy.key'),
-	cert: fs.readFileSync('/var/opt/certs/cyberauth_proxy.crt'),
-	ca: fs.readFileSync('/var/opt/certs/cyberauth_ca.crt')
-};
+app.use(expressWinston.errorLogger((CONFIGURATION.LOGGING_OPTIONS)));
 
-https.createServer(credentials, app).listen(8080)
+https.createServer(CONFIGURATION.CREDENTIALS, app).listen(8080);

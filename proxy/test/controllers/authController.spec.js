@@ -52,9 +52,8 @@ describe('AuthController', function () {
         });
     });
 
-    after(function () {
-        mockery.enable({
-            warnOnUnregistered: false
-        });
+    after(function() {
+        mockery.disable();
+        mockery.deregisterAll();
     });
 });

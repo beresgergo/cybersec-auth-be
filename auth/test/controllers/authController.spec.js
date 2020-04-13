@@ -81,6 +81,7 @@ describe('AuthenticationController', function() {
 
     after(function() {
         mockery.disable();
+        mockery.deregisterAll();
     });
 
 });
