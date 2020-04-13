@@ -27,5 +27,4 @@ module.exports.CREDENTIALS= {
     rejectUnauthorized: true
 };
 
-module.exports.SESSION_SECRET = process.env.SESSION_SECRET || '';
-module.exports.SESSION_STORE_URL = process.env.SESSION_CONNECTION_URL || 'mongodb://localhost:27017';
+module.exports.CONNECTION_STRING = process.env.CONNECTION_URL || 'mongodb://localhost:27017';

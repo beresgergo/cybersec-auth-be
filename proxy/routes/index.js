@@ -3,10 +3,14 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const requestLogController = require('../controllers/requestLoggerController');
+const registrationController = require('../controllers/registrationController');
 
-router.get('/auth', requestLogController.logRequest, authController.getAuthenticationToken);
-router.post('/protected', requestLogController.logRequest, authController.getProtectedResource);
-router.get('/ping', requestLogController.logRequest, authController.ping);
+router.get('/auth', authController.getAuthenticationToken);
+router.post('/protected', authController.getProtectedResource);
+router.get('/ping', authController.ping);
+router.get('/user/:username', registrationController.checkUsername);
+router.post('/user/:username/setPassword', registrationController.setPassword);
+router.post('/user/:username/confirmPassword', registrationController.confirmPassword);
+router.post('/user/:username/finalize', registrationController.finalize);
 
 module.exports = router;

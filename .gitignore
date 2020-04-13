@@ -7,3 +7,4 @@ ssl/cyberauth_registration.*
 registration/node_modules
 auth/node_modules
 proxy/node_modules
+data/*

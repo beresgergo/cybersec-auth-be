@@ -1,32 +1,14 @@
 'use strict';
 
+const CONFIGURATION = require('../config/index');
 const request = require('request-promise-native');
-const session = require('../model/session');
 
 const HTTP_OK = 200;
 
-//at startup delete all the remaining objects in session
-session.deleteMany({});
+module.exports.checkUsername = (req, res) => {};
 
-module.exports.sessionTest = (req, res) => {
-    const sessionTrial = session({
-        testValue: 'whatever',
-        testCondition: true
-    });
+module.exports.setPassword = (req, res) => {};
 
-    sessionTrial.save(() => {
-        res
-            .status(HTTP_OK)
-            .json({
-                done: 'OK'
-            });
-    });
-};
+module.exports.confirmPassword = (req, res) => {};
 
-module.exports.sessionTest2 = (_, res) => {
-    session.findOne({ testValue: 'whatever' }, (_, result) => {
-        res
-            .status(HTTP_OK)
-            .json(result);
-    });
-};
+module.exports.finalize = (req, res) => {};

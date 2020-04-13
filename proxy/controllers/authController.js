@@ -1,12 +1,12 @@
 'use strict';
 
-const base = require('../config/index');
+const CONFIGURATION = require('../config/index');
 const request = require('request-promise-native');
 
 const HTTP_OK = 200;
 
 module.exports.getAuthenticationToken = (req, res) => {
-    const promise = request.get(base.authBaseConfig);
+    const promise = request.get(CONFIGURATION.authBaseConfig);
 
     promise.then(response => {
         return res
@@ -24,7 +24,7 @@ module.exports.getAuthenticationToken = (req, res) => {
 };
 
 module.exports.getProtectedResource = (req, res) => {
-    const opts = base.getProtectedResourceConfig;
+    const opts = CONFIGURATION.getProtectedResourceConfig;
     opts.json = req.body;
     const promise = request.post(opts);
 

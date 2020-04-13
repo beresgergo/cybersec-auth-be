@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(expressWinston.logger(CONFIGURATION.LOGGING_OPTIONS));
 
 mongoose
-    .connect(CONFIGURATION.SESSION_STORE_URL, CONFIGURATION.MONGOOSE_OPTIONS)
+    .connect(CONFIGURATION.CONNECTION_STRING, CONFIGURATION.MONGOOSE_OPTIONS)
     .then(() => {
         LOG.info('Connection to DB established.');
     });

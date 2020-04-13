@@ -4,6 +4,8 @@ const HTTP_CONSTANTS = require('../utils/httpConstants');
 const MESSAGES = require('../utils/messages');
 const userStore = require('../models/userStore');
 
+userStore.deleteMany({});
+
 module.exports.checkUsername = (req, res) => {
     const session = res.locals.session;
     const username = req.params.username;

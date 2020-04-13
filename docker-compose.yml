@@ -22,8 +22,7 @@ services:
       - /private/etc/localtime:/etc/localtime:ro
     environment:
       - LOG_LEVEL=1
-      - SESSION_CONNECTION_URL=mongodb://credentialstore:27017/sessionStore
-      - SESSION_SECRET=,!]`E@&3t6iY~F1
+      - CONNECTION_STRING=mongodb://credentialstore:27017/
   auth:
     networks:
       - node_net
@@ -41,9 +40,6 @@ services:
       - ./ssl/cyberauth_auth.key:/var/opt/certs/cyberauth_auth.key:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
       - /private/etc/localtime:/etc/localtime:ro
-    environment:
-      - SESSION_CONNECTION_URL=mongodb://credentialstore:27017/sessionStore
-      - SESSION_SECRET=,!]`E@&3t6iY~F1
   registration:
     networks:
       - node_net
@@ -62,9 +58,7 @@ services:
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
       - /private/etc/localtime:/etc/localtime:ro
     environment:
-      - USERCONNECTIONURL=mongodb://credentialstore:27017/userStore
-      - SESSION_CONNECTION_URL=mongodb://credentialstore:27017/sessionStore
-      - SESSION_SECRET=,!]`E@&3t6iY~F1
+      - CONNECTION_STRING=mongodb://credentialstore:27017/
   credentialstore:
       networks:
         - node_net
