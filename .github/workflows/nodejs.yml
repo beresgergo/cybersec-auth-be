@@ -36,13 +36,13 @@ jobs:
       run: cd proxy && npm audit
     - name: Execute ESLint on proxy component
       run: cd proxy && npm run lint
-    - name: Install npm dependencies for proxy component
+    - name: Install npm dependencies for registration component
       run: cd registration && npm install
-    - name: Execute tests for proxy component
+    - name: Execute tests for registration component
       run: cd registration && npm test
-    - name: Execute npm audit on proxy component
+    - name: Execute npm audit on registration component
       run: cd registration && npm audit
-    - name: Execute ESLint on proxy component
+    - name: Execute ESLint on registration component
       run: cd registration && npm run lint
       env:
         CI: true
