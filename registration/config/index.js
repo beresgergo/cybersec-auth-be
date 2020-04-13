@@ -27,4 +27,4 @@ module.exports.CREDENTIALS= {
     rejectUnauthorized: true
 };
 
-module.exports.CONNECTION_STRING = process.env.CONNECTION_URL || 'mongodb://localhost:27017';
+module.exports.CONNECTION_STRING = process.env.CONNECTION_STRING || 'mongodb://localhost:27017';

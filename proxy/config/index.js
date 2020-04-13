@@ -3,11 +3,11 @@
 const fs = require('fs');
 const winston = require('winston');
 
-module.exports.registrationSessionTestConfig = {
+module.exports.registrationConfig = {
     key: fs.readFileSync('/var/opt/certs/cyberauth_proxy.key'),
     cert: fs.readFileSync('/var/opt/certs/cyberauth_proxy.crt'),
     ca: fs.readFileSync('/var/opt/certs/cyberauth_ca.crt'),
-    uri: 'https://registration:8000/',
+    uri: 'https://registration:8000/user',
     json: true
 };
 

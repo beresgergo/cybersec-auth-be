@@ -5,6 +5,10 @@ const HTTP_CONSTANTS = require('../utils/httpConstants');
 const MESSAGES = require('../utils/messages');
 const { v4 : uuid } = require('uuid');
 
+const CONFIGURATION = require('../config/index')
+const winston = require('winston');
+const LOG = winston.createLogger(CONFIGURATION.LOGGING_OPTIONS);
+
 const TWO_MINUTES_IN_MILIS = 2 * 60 * 1000;
 
 module.exports.createSession = (req, res, next) =>  {
@@ -26,15 +30,18 @@ module.exports.createSession = (req, res, next) =>  {
 
 module.exports.populateSession = (req, res, next) => {
     if(!req.body.sessionId) {
-        res
+        LOG.error('SessionID is missing, throwing bad request');
+        LOG.error('req=' + JSON.stringify(req.body));
+        return res
             .status(HTTP_CONSTANTS.BAD_REQUEST)
             .json({ message: MESSAGES.SESSION_ID_MISSING });
+
     }
 
     registrationSession.findOne({ id: req.body.sessionId }, (_, result) => {
         if (result) {
             res.locals.session = result;
-            next();
+            return next();
         }
         res
             .status(HTTP_CONSTANTS.BAD_REQUEST)
@@ -44,7 +51,7 @@ module.exports.populateSession = (req, res, next) => {
 
 module.exports.removeSession = (req, res, next) => {
     if(!req.body.sessionId) {
-        res
+        return res
             .status(HTTP_CONSTANTS.BAD_REQUEST)
             .json({ message: MESSAGES.SESSION_ID_MISSING });
     }

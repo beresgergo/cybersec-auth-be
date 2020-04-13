@@ -58,6 +58,7 @@ describe('Registration Controller', function() {
             });
 
             response.locals.session = {
+                id: '1',
                 save: function() {
                     return {
                         then: cb => cb()
@@ -71,6 +72,7 @@ describe('Registration Controller', function() {
                 expect(response.locals.session.username).to.be.equal('username1');
                 const payload = JSON.parse(response._getData());
                 expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
+                expect(payload.sessionId).to.be.equal('1');
                 done();
             });
 
