@@ -5,7 +5,7 @@ const HTTP_CONSTANTS = require('../utils/httpConstants');
 const MESSAGES = require('../utils/messages');
 const { v4 : uuid } = require('uuid');
 
-const CONFIGURATION = require('../config/index')
+const CONFIGURATION = require('../config/index');
 const winston = require('winston');
 const LOG = winston.createLogger(CONFIGURATION.LOGGING_OPTIONS);
 
