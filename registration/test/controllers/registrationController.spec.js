@@ -1,12 +1,16 @@
+'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
+const events = require('events');
 const httpMocks = require('node-mocks-http');
 const mockery = require('mockery');
+const HTTP_CONSTANTS = require('../../utils/httpConstants');
 const MESSAGES = require('../../utils/messages');
 const modelMockBuilder = require('../utils/mongooseModelMock');
 
 function buildResponse() {
-    return httpMocks.createResponse({eventEmitter: require('events').EventEmitter})
+    return httpMocks.createResponse({eventEmitter: events.EventEmitter})
 }
 
 mockery.enable({
@@ -38,7 +42,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.USERNAME_ALREADY_USED);
                 done();
@@ -68,7 +72,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(200);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
                 expect(response.locals.session.username).to.be.equal('username1');
                 const payload = JSON.parse(response._getData());
                 expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
@@ -98,7 +102,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.DATA_MISSING_FROM_SESSION);
                 done();
@@ -133,7 +137,7 @@ describe('Registration Controller', function() {
                 expect(response._isJSON()).to.be.true;
                 expect(response.locals.session.username).to.be.equal('username');
                 expect(response.locals.session.setPassword).to.be.equal('password');
-                expect(response.statusCode).to.be.equal(200);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
                 const payload = JSON.parse(response._getData());
                 expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
                 done();
@@ -163,7 +167,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.DATA_MISSING_FROM_SESSION);
                 done();
@@ -192,7 +196,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.PASSWORD_MISMATCH);
                 done();
@@ -226,7 +230,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(200);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
                 const payload = JSON.parse(response._getData());
                 expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
                 done();
@@ -253,7 +257,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.DATA_MISSING_FROM_SESSION);
                 done();
@@ -280,7 +284,7 @@ describe('Registration Controller', function() {
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(200);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
                 const payload = JSON.parse(response._getData());
                 expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
                 done();

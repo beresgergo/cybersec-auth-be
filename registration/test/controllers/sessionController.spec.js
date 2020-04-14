@@ -1,11 +1,15 @@
+'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
+const events = require('events');
 const httpMocks = require('node-mocks-http');
 const mockery = require('mockery');
+const HTTP_CONSTANTS = require('../../utils/httpConstants');
 const MESSAGES = require('../../utils/messages');
 const modelMockBuilder = require('../utils/mongooseModelMock');
 function buildResponse() {
-    return httpMocks.createResponse({eventEmitter: require('events').EventEmitter})
+    return httpMocks.createResponse({eventEmitter: events.EventEmitter})
 }
 
 mockery.enable({
@@ -61,7 +65,7 @@ describe('SessionController', function() {
 
             response.on('end', function() {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.SESSION_ID_MISSING);
                 done();
@@ -79,7 +83,7 @@ describe('SessionController', function() {
 
             response.on('end', function() {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.SESSION_ID_NOT_FOUND);
                 done();
@@ -119,7 +123,7 @@ describe('SessionController', function() {
 
             response.on('end', function() {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(400);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.SESSION_ID_MISSING);
                 done();

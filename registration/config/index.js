@@ -28,3 +28,5 @@ module.exports.CREDENTIALS= {
 };
 
 module.exports.CONNECTION_STRING = process.env.CONNECTION_STRING || 'mongodb://localhost:27017';
+
+module.exports.SERVER_PORT = 8000;

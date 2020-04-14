@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports.createModelMock = (model) => {
     const ModelMock = function(opts) {
         return {

@@ -9,7 +9,7 @@ const CONFIGURATION = require('../config/index');
 const winston = require('winston');
 const LOG = winston.createLogger(CONFIGURATION.LOGGING_OPTIONS);
 
-const TWO_MINUTES_IN_MILIS = 2 * 60 * 1000;
+const TWO_MINUTES_IN_MILIS = 120000;
 
 module.exports.createSession = (req, res, next) =>  {
     const now = new Date();
