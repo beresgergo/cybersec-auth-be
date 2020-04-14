@@ -42,4 +42,4 @@ module.exports.CREDENTIALS = {
     ca: fs.readFileSync('/var/opt/certs/cyberauth_ca.crt')
 };
 
-module.exports.SERVER_PORT = 8000;
+module.exports.SERVER_PORT = 8080;
