@@ -1,3 +1,5 @@
+'use strict';
+
 const authenticationService = require('../../services/authentiationService');
 const chai = require('chai');
 const expect = chai.expect;

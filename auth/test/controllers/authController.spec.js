@@ -1,10 +1,15 @@
+'use strict';
+
 const chai = require('chai');
 const expect = chai.expect;
+const events = require('events').EventEmitter
 const httpMocks = require('node-mocks-http');
 const mockery = require('mockery');
 
+const HTTP_OK = 200;
+
 function buildResponse() {
-    return httpMocks.createResponse({eventEmitter: require('events').EventEmitter})
+    return httpMocks.createResponse({eventEmitter: events.EventEmitter})
 }
 
 mockery.enable({
@@ -35,7 +40,7 @@ describe('AuthenticationController', function() {
 
             response.on('end', function() {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(200);
+                expect(response.statusCode).to.be.equal(HTTP_OK);
                 const payload = JSON.parse(response._getData());
                 expect(payload.token).to.be.equal('authToken');
                 done();
@@ -69,7 +74,7 @@ describe('AuthenticationController', function() {
 
             response.on('end', function() {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(200);
+                expect(response.statusCode).to.be.equal(HTTP_OK);
                 const payload = JSON.parse(response._getData());
                 expect(payload.secure).to.be.true;
                 done();
