@@ -10,15 +10,20 @@
   },
   "globals": {},
   "rules": {
-    "quotes": [
-      2,
-      "single"
-    ],
-    "no-unused-vars": [
-      0,
-      {
-        "varsIgnorePattern": "_"
-      }
-    ]
+    "quotes": [ "error", "single" ],
+    "semi-spacing": "error",
+    "semi-style": ["error", "last"],
+    "no-unused-vars": [ "error", { "argsIgnorePattern": "^_" }],
+    "block-scoped-var": "error",
+    "eqeqeq": "error",
+    "no-else-return": ["error", { "allowElseIf": false }],
+    "no-eq-null": "error",
+    "no-magic-numbers": "error",
+    "strict": ["error", "global"],
+    "global-require": "error",
+    "no-mixed-requires": "error",
+    "no-mixed-spaces-and-tabs": "error",
+    "indent": "error",
+    "no-trailing-spaces": "error"
   }
 }

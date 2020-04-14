@@ -6,10 +6,8 @@ const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 const helmet = require('helmet');
 const CONFIGURATION = require('./config/index');
-
-const winston = require('winston');
 const expressWinston = require('express-winston');
-const LOG = winston.createLogger(CONFIGURATION.LOGGING_OPTIONS);
+
 const app = express();
 
 app.use(helmet());
@@ -22,4 +20,4 @@ app.use('/', routes);
 
 app.use(expressWinston.errorLogger((CONFIGURATION.LOGGING_OPTIONS)));
 
-https.createServer(CONFIGURATION.CREDENTIALS, app).listen(8080);
+https.createServer(CONFIGURATION.CREDENTIALS, app).listen(CONFIGURATION.SERVER_PORT);

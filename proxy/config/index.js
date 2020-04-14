@@ -41,3 +41,5 @@ module.exports.CREDENTIALS = {
     cert: fs.readFileSync('/var/opt/certs/cyberauth_proxy.crt'),
     ca: fs.readFileSync('/var/opt/certs/cyberauth_ca.crt')
 };
+
+module.exports.SERVER_PORT = 8000;
