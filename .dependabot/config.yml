@@ -1,0 +1,23 @@
+version: 1
+update_configs:
+  # update packages and dockerfile in proxy component weekly
+  - package_manager: "javascript"
+    directory: "/proxy"
+    update_schedule: "weekly"
+  - package_manager: "docker"
+    directory: "/proxy"
+    update_schedule: "weekly"
+  # update packages and dockerfile in auth component weekly
+  - package_manager: "javascript"
+    directory: "/auth"
+    update_schedule: "weekly"
+  - package_manager: "docker"
+    directory: "/auth"
+    update_schedule: "weekly"
+  # update packages and dockerfile in registration component weekly
+  - package_manager: "javascript"
+    directory: "/registration"
+    update_schedule: "weekly"
+  - package_manager: "docker"
+    directory: "/registration"
+    update_schedule: "weekly"
