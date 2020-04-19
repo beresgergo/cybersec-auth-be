@@ -67,6 +67,7 @@ services:
       ports:
         - "27017:27017"
       volumes:
+        - ./data/db:/data/db
         - /private/etc/localtime:/etc/localtime:ro
 networks:
   node_net:
