@@ -1,5 +1,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const { generateKeyPairSync } = require('crypto');
+const rsaUtils = require('../utils/rsaUtils');
 const expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -142,7 +144,7 @@ describe('Proxy', function () {
     });
 
     describe('#post finalize', function () {
-        it('the confirmed password should match the previously set one to get HTTP OK', function (done) {
+        xit('the confirmed password should match the previously set one to get HTTP OK', function(done) {
             var sessionId;
             requester
                 .get('/user/testuser')
@@ -158,13 +160,49 @@ describe('Proxy', function () {
                             password: 'password'
                         })
                 }).then(res => {
-                expect(res.status).to.be.eq(200);
-                return requester.post('/user/testuser/confirmPassword')
-                    .type('json')
-                    .send({
-                        sessionId: sessionId,
-                        confirmPassword: 'password'
-                    });
+                    expect(res.status).to.be.eq(200);
+                    return requester.post('/user/testuser/confirmPassword')
+                        .type('json')
+                        .send({
+                            sessionId: sessionId,
+                            confirmPassword: 'password'
+                        });
+                }).then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.status).to.be.eq('OK');
+                    return requester.post('/user/testuser/finalize')
+                        .type('json')
+                        .send({
+                            sessionId: sessionId
+                        });
+                }).then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.status).to.be.eq('OK');
+                    done();
+                });
+        });
+
+        it('can be called also after submitting a public key.', function (done) {
+            let sessionId;
+            const { publicKey, _ } = generateKeyPairSync('rsa', {
+                modulusLength: 2048,
+                publicKeyEncoding: rsaUtils.PUBLIC_KEY_ENCODING,
+                privateKeyEncoding: rsaUtils.PRIVATE_KEY_ENCODING
+            });
+
+            requester
+                .get('/user/testuser')
+                .then((res) => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.status).to.be.eq('OK');
+                    expect(res.body.sessionId).not.to.be.null;
+                    sessionId = res.body.sessionId;
+                    return requester.post('/user/testuser/publicKey')
+                        .type('json')
+                        .send({
+                            sessionId: sessionId,
+                            publicKey: Buffer.from(publicKey).toString('base64')
+                        })
                 }).then(res => {
                     expect(res.status).to.be.eq(200);
                     expect(res.body.status).to.be.eq('OK');

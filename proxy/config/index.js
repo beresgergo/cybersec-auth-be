@@ -44,6 +44,18 @@ module.exports.createConfirmPasswordOptions = function(userId) {
     };
 };
 
+module.exports.createPublicKeyOptions = function(userId) {
+    return {
+        url: 'https://registration:8000/user/' + userId + '/publicKey',
+        opts: {
+            method: HTTP_CONSTANTS.HTTP_METHOD_POST,
+            headers: {
+                'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+            }
+        }
+    };
+};
+
 module.exports.createFinalizeOptions = function(userId) {
     return {
         url: 'https://registration:8000/user/' + userId + '/finalize',

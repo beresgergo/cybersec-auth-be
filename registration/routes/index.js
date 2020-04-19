@@ -17,6 +17,10 @@ router.post('/user/:username/confirmPassword',
     sessionController.populateSession,
     registrationController.confirmPassword);
 
+router.post('/user/:username/publicKey',
+    sessionController.populateSession,
+    registrationController.publicKey);
+
 router.post('/user/:username/finalize',
     sessionController.populateSession,
     sessionController.removeSession,

@@ -67,6 +67,23 @@ module.exports.confirmPassword = (req, res) => {
     });
 };
 
+module.exports.publicKey = (req, res) => {
+    const opts = CONFIGURATION.createPublicKeyOptions(req.params.username);
+    opts.opts.body = JSON.stringify(req.body);
+
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res)
+        }
+
+        return response.json();
+    }).then(body => {
+        return res
+            .status(HTTP_OK)
+            .json(body);
+    });
+};
+
 module.exports.finalize = (req, res) => {
     const opts = CONFIGURATION.createFinalizeOptions(req.params.username);
     opts.opts.body = JSON.stringify(req.body);

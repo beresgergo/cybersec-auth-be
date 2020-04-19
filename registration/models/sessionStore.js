@@ -7,6 +7,7 @@ const sessionSchema = mongoose.Schema({
     username: String,
     setPassword: String,
     confirmPassword: String,
+    publicKey: String,
     validUntil: Date
 });
 

@@ -20,6 +20,7 @@ module.exports.createSession = (req, res, next) =>  {
         username: '',
         setPassword: '',
         confirmPassword: '',
+        publicKey: '',
         valid: validUntil
     });
     sessionObj.save((err, session) => {
