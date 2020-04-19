@@ -18,7 +18,7 @@
     "express-winston": "^4.0.3",
     "helmet": "^3.21.1",
     "mongoose": "^5.9.9",
-    "node-input-validator": "^4.1.0",
+    "node-input-validator": "^4.2.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "uuid": "^7.0.3",
