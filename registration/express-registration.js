@@ -30,6 +30,4 @@ app.use('/', routes);
 
 app.use(expressWinston.errorLogger(CONFIGURATION.LOGGING_OPTIONS));
 
-
-
 https.createServer(CONFIGURATION.CREDENTIALS, app).listen(CONFIGURATION.SERVER_PORT);

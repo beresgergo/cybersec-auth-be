@@ -1,96 +1,85 @@
 'use strict';
 
 const CONFIGURATION = require('../config/index');
-const request = require('request-promise-native');
+const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
 const winston = require('winston');
 const LOG = winston.createLogger(CONFIGURATION.LOGGING_OPTIONS);
 
 const HTTP_OK = 200;
 
+function handleHttpError(response, res) {
+    response
+        .json()
+        .then(body => {
+            LOG.error('Request failed with statusCode:' + response.statusCode);
+            LOG.error('Payload ' + JSON.stringify(response.error));
+            res.status(response.status);
+            res.json(body);
+        });
+}
+
 module.exports.checkUsername = (req, res) => {
-    const opts = Object.assign({}, CONFIGURATION.registrationConfig);
-    opts.uri += '/' + req.params.username;
+    const opts = CONFIGURATION.createCheckUsernameOptions(req.params.username);
 
-    const promise = request.get(opts);
-
-    promise.then(response => {
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res)
+        }
+        return response.json();
+    }).then(body => {
         return res
             .status(HTTP_OK)
-            .json({
-                status: response.status,
-                sessionId: response.sessionId
-            });
-    }, response => {
-        LOG.error('Request failed with statusCode:' + response.statusCode);
-        LOG.error('Payload ' + JSON.stringify(response.error));
-        return res
-            .status(response.statusCode)
-            .json({ message: response.error.message });
+            .json(body);
     });
 };
 
 module.exports.setPassword = (req, res) => {
-    const opts = Object.assign({}, CONFIGURATION.registrationConfig);
-    opts.uri += '/' + req.params.username + '/setPassword';
-    opts.json = req.body;
-    const promise = request.post(opts);
+    const opts = CONFIGURATION.createSetPasswordOptions(req.params.username);
+    opts.opts.body = JSON.stringify(req.body);
 
-    promise.then(response => {
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res)
+        }
+
+        return response.json();
+    }).then(body => {
         return res
             .status(HTTP_OK)
-            .json({
-                status: response.status,
-                sessionId: response.sessionId
-            });
-    }, response => {
-        LOG.error('Request failed with statusCode:' + response.statusCode);
-        LOG.error('Payload ' + JSON.stringify(response.error));
-        return res
-            .status(response.statusCode)
-            .json({ message: response.error.message });
+            .json(body);
     });
 };
 
 module.exports.confirmPassword = (req, res) => {
-    const opts = Object.assign({}, CONFIGURATION.registrationConfig);
-    opts.uri += '/' + req.params.username + '/confirmPassword';
-    opts.json = req.body;
-    const promise = request.post(opts);
+    const opts = CONFIGURATION.createConfirmPasswordOptions(req.params.username);
+    opts.opts.body = JSON.stringify(req.body);
 
-    promise.then(response => {
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res)
+        }
+
+        return response.json();
+    }).then(body => {
         return res
             .status(HTTP_OK)
-            .json({
-                status: response.status,
-                sessionId: response.sessionId
-            });
-    }, response => {
-        LOG.error('Request failed with statusCode:' + response.statusCode);
-        LOG.error('Payload ' + JSON.stringify(response.error));
-        return res
-            .status(response.statusCode)
-            .json({ message: response.error.message });
+            .json(body);
     });
 };
 
 module.exports.finalize = (req, res) => {
-    const opts = Object.assign({}, CONFIGURATION.registrationConfig);
-    opts.uri += '/' + req.params.username + '/finalize';
-    opts.json = req.body;
-    const promise = request.post(opts);
+    const opts = CONFIGURATION.createFinalizeOptions(req.params.username);
+    opts.opts.body = JSON.stringify(req.body);
 
-    promise.then(response => {
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res)
+        }
+
+        return response.json();
+    }).then(body => {
         return res
             .status(HTTP_OK)
-            .json({
-                status: response.status,
-                sessionId: response.sessionId
-            });
-    }, response => {
-        LOG.error('Request failed with statusCode:' + response.statusCode);
-        LOG.error('Payload ' + JSON.stringify(response.error));
-        return res
-            .status(response.statusCode)
-            .json({ message: response.error.message });
+            .json(body);
     });
 };

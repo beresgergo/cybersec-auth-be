@@ -2,17 +2,17 @@
 
 const CONFIGURATION = require('../config/index');
 const HTTP_CONSTANTS = require('../utils/httpConstants');
-const request = require('request-promise-native');
 
+const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
 
 module.exports.getAuthenticationToken = (req, res) => {
-    const promise = request.get(CONFIGURATION.authBaseConfig);
-
-    promise.then(response => {
+    fetch(CONFIGURATION.AUTH_BASE_CONFIG.url).then(response => {
+        return response.json();
+    }).then(body => {
         return res
             .status(HTTP_CONSTANTS.HTTP_OK)
             .json({
-                authorizationToken: response.token
+                authorizationToken: body.token
             });
     }, () => {
         return res
@@ -24,16 +24,23 @@ module.exports.getAuthenticationToken = (req, res) => {
 };
 
 module.exports.getProtectedResource = (req, res) => {
-    const opts = CONFIGURATION.getProtectedResourceConfig;
-    opts.json = req.body;
-    const promise = request.post(opts);
+    const opts = CONFIGURATION.PROTECTED_RESOURCE_CONFIG.opts;
+    opts.body = JSON.stringify(req.body);
 
-    promise.then(response => {
+    fetch(CONFIGURATION.PROTECTED_RESOURCE_CONFIG.url, opts).then(response => {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+
+        return response.json();
+    }).then(body => {
         return res
             .status(HTTP_CONSTANTS.HTTP_OK)
-            .json(response);
-    }, () => {
-        return res.status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED).json({});
+            .json(body)
+    }).catch(() => {
+        return res
+            .status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED)
+            .json({});
     });
 };
 

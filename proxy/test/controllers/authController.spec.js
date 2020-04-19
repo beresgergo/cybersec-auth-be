@@ -21,10 +21,6 @@ mockery.registerMock('../config/index', {
     getProtectedResourceConfig: {}
 });
 
-mockery.registerMock('request-promise-native', {
-
-});
-
 const authenticationController = require('../../controllers/authController');
 
 describe('AuthController', function () {
