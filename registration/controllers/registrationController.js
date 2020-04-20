@@ -34,10 +34,9 @@ module.exports.checkUsername = (req, res) => {
 module.exports.setPassword = (req, res) => {
     const session = res.locals.session;
     if (!session.username) {
-        res
+        return res
             .status(HTTP_CONSTANTS.BAD_REQUEST)
             .json({ message : MESSAGES.DATA_MISSING_FROM_SESSION });
-        return;
     }
 
     session.setPassword = req.body.password;

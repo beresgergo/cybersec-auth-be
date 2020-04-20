@@ -24,8 +24,7 @@ module.exports.createModelMock = (model) => {
             return {
                 then: cb => {
                     if (prop.username === 'username') {
-                        cb(model);
-                        return;
+                        return cb(model);
                     }
                     return cb(null);
                 }

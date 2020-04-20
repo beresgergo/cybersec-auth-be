@@ -11,7 +11,7 @@ const modelMockBuilder = require('../utils/mongooseModelMock');
 const { createSessionMock } = require('../utils/sessionMock');
 
 function buildResponse() {
-    return httpMocks.createResponse({eventEmitter: events.EventEmitter})
+    return httpMocks.createResponse({eventEmitter: events.EventEmitter});
 }
 
 mockery.enable({
