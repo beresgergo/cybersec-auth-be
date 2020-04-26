@@ -1,0 +1,5 @@
+'use strict';
+
+module.exports.PREFERRED_AUTHENTICATION_MFA = 'MFA';
+module.exports.PREFERRED_AUTHENTICATION_RSA = 'RSA';
+module.exports.PREFERRED_AUTHENTICATION_TOTP = 'TOTP';

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-create_key_and_certificate_for_component () {
+create_keypair_and_certificate () {
 # create RSA private key
 openssl genrsa -out "$1.key" 2048
 # subtract the public key
@@ -11,6 +11,10 @@ openssl req -new -key "$1.key" -out "$1.csr" -subj "/C=HU/ST=Budapest/L=Budapest
 openssl x509 -req -in "$1.csr" -CA cyberauth_ca.crt -CAkey cyberauth_ca.key -CAcreateserial -out "$1.crt"
 }
 
-create_key_and_certificate_for_component "cyberauth_proxy" "Proxy" "proxy"
-create_key_and_certificate_for_component "cyberauth_auth" "Authentication" "auth"
-create_key_and_certificate_for_component "cyberauth_registration" "Registration" "registration"
+# RSA keys for the two-way SSL authentication
+create_keypair_and_certificate "cyberauth_proxy" "Proxy" "proxy"
+create_keypair_and_certificate "cyberauth_auth" "Authentication" "auth"
+create_keypair_and_certificate "cyberauth_registration" "Registration" "registration"
+
+# RSA key for the JWT token signature
+create_keypair_and_certificate "jwt_signer" "Authetnication" "JWT TOKEN SIGNER"

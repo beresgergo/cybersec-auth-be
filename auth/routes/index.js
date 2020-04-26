@@ -7,19 +7,25 @@ const sessionController = require('../controllers/sessionController');
 
 router.get('/login/:username',
     sessionController.createSession,
-    authenticationController.startAuthentication); // start workflow
+    authenticationController.startAuthentication); // start workflow, returns expected authentication type
 
-router.get('/login/challenge',
+router.post('/login/otpToken',
     sessionController.populateSession,
-    authenticationController.generateChallenge); // retrieve challenge
+    authenticationController.verifyTotpToken);
 
 router.post('/login/challenge',
     sessionController.populateSession,
-    sessionController.removeSession,
+    authenticationController.generateChallenge); // retrieve challenge
+
+router.post('/login/signedChallenge',
+    sessionController.populateSession,
     authenticationController.checkSignature); // submit signed challenge
 
-router.post('/protected',
-    authenticationController.validateAuthToken,
-    authenticationController.protectedResource);
+router.post('/retrieveToken',
+    sessionController.populateSession,
+    sessionController.removeSession,
+    authenticationController.token); // submit signed challenge
+
+router.post('/verifyToken', authenticationController.validateAuthToken);
 
 module.exports = router;

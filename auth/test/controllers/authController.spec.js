@@ -1,15 +1,21 @@
 'use strict';
 
+const AUTHENTICATION_CONSTANTS = require('../../utils/authenticationConstants');
+const HTTP_CONSTANTS = require('../../utils/httpConstants');
+const MESSAGES = require('../../utils/messages');
+
 const chai = require('chai');
 const expect = chai.expect;
 const events = require('events');
 const httpMocks = require('node-mocks-http');
 const mockery = require('mockery');
-const HTTP_CONSTANTS = require('../../utils/httpConstants');
-const MESSAGES = require('../../utils/messages');
 const modelMockBuilder = require('../utils/mongooseModelMock');
+
+const authenticationServiceMock = require('../utils/authenticationServiceMock');
+const configurationMock = require('../utils/configurationMock');
 const cryptoMock = require('../utils/cryptoMock');
-const { authenticationServiceMock } = require('../utils/authenticationServiceMock');
+const otpLibMock = require('../utils/otpLibMock');
+
 const { createSessionMock } = require('../utils/sessionMock');
 
 
@@ -25,7 +31,9 @@ mockery.registerMock('uuid', {
     v4: () => { return '1'; }
 });
 
-mockery.registerMock('crypto', cryptoMock);
+mockery.registerMock(configurationMock.moduleName, configurationMock);
+
+mockery.registerMock(cryptoMock.moduleName, cryptoMock);
 
 mockery.registerMock('../models/userStore', modelMockBuilder.createModelMock({
     username: 'username',
@@ -33,7 +41,9 @@ mockery.registerMock('../models/userStore', modelMockBuilder.createModelMock({
     publicKey: ''
 }));
 
-mockery.registerMock('../services/authentiationService', authenticationServiceMock);
+mockery.registerMock(authenticationServiceMock.moduleName, authenticationServiceMock);
+
+mockery.registerMock(otpLibMock.moduleName, otpLibMock);
 
 const authenticationController = require('../../controllers/authController');
 
@@ -50,7 +60,7 @@ describe('AuthenticationController', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1');
+            response.locals.session = createSessionMock({id: '1'});
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -73,7 +83,7 @@ describe('AuthenticationController', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1');
+            response.locals.session = createSessionMock({id: '1'});
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -87,6 +97,107 @@ describe('AuthenticationController', function() {
         });
     });
 
+    describe('verifyTotpToken', function () {
+
+        it('should return HTTP bad request if preferredAuthType and username are not present in the session', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'POST',
+                url: '/login/otpToken',
+                body: {}
+            });
+
+            response.locals.session = createSessionMock({});
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.message).to.be.equal(MESSAGES.DATA_MISSING_FROM_SESSION);
+                done();
+            });
+
+            authenticationController.verifyTotpToken(request, response);
+        });
+
+        it('should return HTTP bad request if preferredAuthType is RSA it should return a BAD REQUEST', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'POST',
+                url: '/login/otpToken',
+                body: {}
+            });
+
+            response.locals.session = createSessionMock({
+                username: 'username',
+                preferredAuthType: AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_RSA
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.message).to.be.equal(MESSAGES.AUTHENTICATION_TYPE_MISMATCH);
+                done();
+            });
+
+            authenticationController.verifyTotpToken(request, response);
+        });
+
+        it('should return BAD request if the token verification fails', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'POST',
+                url: '/login/otpToken',
+                body: {
+                    token: 'notValid'
+                }
+            });
+
+            response.locals.session = createSessionMock({
+                username: 'username',
+                preferredAuthType: AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_TOTP
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.message).to.be.equal(MESSAGES.INVALID_TOTP_TOKEN);
+                done();
+            });
+
+            authenticationController.verifyTotpToken(request, response);
+        });
+
+        it('should return HTTP OK if token verification succeeds and save it to the session', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'POST',
+                url: '/login/otpToken',
+                body: {
+                    token: 'valid'
+                }
+            });
+
+            response.locals.session = createSessionMock({
+                username: 'username',
+                preferredAuthType: AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_TOTP
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
+                const payload = JSON.parse(response._getData());
+                expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
+                done();
+            });
+
+            authenticationController.verifyTotpToken(request, response);
+        });
+
+    });
+
     describe('#generateChallenge', function() {
         it('should return HTTP bad request if username is not present in the session', function(done) {
             const response = buildResponse();
@@ -95,13 +206,36 @@ describe('AuthenticationController', function() {
                 url: '/login/challenge'
             });
 
-            response.locals.session = createSessionMock('1');
+            response.locals.session = createSessionMock({id: '1'});
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
                 expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
                 expect(payload.message).to.be.equal(MESSAGES.DATA_MISSING_FROM_SESSION);
+                done();
+            });
+
+            authenticationController.generateChallenge(request, response);
+        });
+
+        it('should return HTTP bad request if preferredAuthType is TOTP', function(done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'GET',
+                url: '/login/challenge'
+            });
+
+            response.locals.session = createSessionMock({
+                username: 'username',
+                preferredAuthType: AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_TOTP
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.message).to.be.equal(MESSAGES.AUTHENTICATION_TYPE_MISMATCH);
                 done();
             });
 
@@ -197,7 +331,7 @@ describe('AuthenticationController', function() {
                 expect(response._isJSON()).to.be.true;
                 expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
                 const payload = JSON.parse(response._getData());
-                expect(payload.token).to.be.equal('authToken');
+                expect(payload.message).to.be.equal(MESSAGES.STATUS_OK);
                 done();
             });
 
@@ -205,37 +339,51 @@ describe('AuthenticationController', function() {
         });
     });
 
-    describe('#validateAuthToken', function() {
-        it('should call auhtentication service to validate the given token', function() {
+    describe('#token', function () {
+        it('should return HTTP BAD request if the session is not set up properly', function (done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({
-                method:'POST',
-                url: '/protected'
+                method:'GET',
+                url: '/token'
             });
 
-            authenticationController.validateAuthToken(request, response, (result) => {
-                expect(result).to.be.true;
-            });
-        });
-    });
-
-    describe('#protectedResource', function() {
-        it('should return a simple json object', function(done) {
-            const response = buildResponse();
-            const request = httpMocks.createRequest({
-                method:'POST',
-                url: '/protected'
+            response.locals.session = createSessionMock({
+                preferredAuthType: AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_TOTP,
+                totpDone: false,
             });
 
-            response.on('end', function() {
+            response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
-                expect(payload.secure).to.be.true;
+                expect(payload.message).to.be.equal(MESSAGES.AUTHENTICATION_TYPE_MISMATCH);
                 done();
             });
 
-            authenticationController.protectedResource(request, response);
+            authenticationController.token(request, response);
+        });
+
+        it('should return HTTP OK if with the token if the validation succeeds', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'GET',
+                url: '/token'
+            });
+
+            response.locals.session = createSessionMock({
+                preferredAuthType: AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_TOTP,
+                totpDone: true,
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
+                const payload = JSON.parse(response._getData());
+                expect(payload.token).to.be.equal('authToken');
+                done();
+            });
+
+            authenticationController.token(request, response);
         });
     });
 

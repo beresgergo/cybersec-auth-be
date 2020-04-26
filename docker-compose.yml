@@ -37,6 +37,8 @@ services:
     volumes:
       - ./ssl/cyberauth_auth.crt:/var/opt/certs/cyberauth_auth.crt:ro
       - ./ssl/cyberauth_auth.key:/var/opt/certs/cyberauth_auth.key:ro
+      - ./ssl/cyberauth_auth.key:/var/opt/jwt/jwt_signer.key:ro
+      - ./ssl/cyberauth_auth.key:/var/opt/jwt/jwt_signer.pubkey:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
       - /private/etc/localtime:/etc/localtime:ro
     environment:
@@ -50,7 +52,7 @@ services:
       - credentialstore
     image: gergob/cyber-auth-be-registration
     container_name: cyber-auth-be-registration
-    build: ./registr  ation
+    build: ./registration
     ports:
       - "8082:8000"
     volumes:

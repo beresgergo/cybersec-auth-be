@@ -27,6 +27,20 @@ module.exports.CREDENTIALS = {
     rejectUnauthorized: true
 };
 
+module.exports.JWT = {
+    privateKey : fs.readFileSync('/var/opt/jwt/jwt_signer.key'),
+    publicKey : fs.readFileSync('/var/opt/jwt/jwt_signer.pubkey'),
+    options: {
+        algorithm: 'RS256',
+        expiresIn: '2m'
+    }
+};
+
+module.exports.TOTP_OPTIONS = {
+    digits: 6,
+    algorithm: 'sha256'
+};
+
 module.exports.SERVER_PORT = 8000;
 
 module.exports.CONNECTION_STRING = process.env.CONNECTION_STRING || 'mongodb://localhost:27017';

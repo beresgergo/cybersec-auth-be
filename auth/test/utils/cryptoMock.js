@@ -1,5 +1,7 @@
 'use strict';
 
+module.exports.moduleName = 'crypto';
+
 module.exports.createVerify = _ => {
     return {
         update: _ => {},

@@ -1,14 +1,27 @@
 'use strict';
 
-const authenticationService = require('../../services/authentiationService');
 const chai = require('chai');
 const expect = chai.expect;
+const mockery = require('mockery');
+
+const jsonwebtokenMock = require('../utils/jsonwebtokenMock');
+const configurationMock = require('../utils/configurationMock');
+
+mockery.enable({
+    warnOnUnregistered: false
+});
+
+mockery.registerMock(configurationMock.moduleName, configurationMock);
+mockery.registerMock(jsonwebtokenMock.moduleName, jsonwebtokenMock);
+
+const authenticationService = require('../../services/authenticationService');
 
 describe('AuthenticationService', function() {
     describe('#createAuthenticationToken', function() {
         it('should always return authToken', function() {
-            const authToken = authenticationService.createAuthenticationToken();
-            expect(authToken).to.be.equal('authToken');
+            authenticationService.createAuthenticationToken().then(token  => {
+                expect(token).to.be.equal('authToken');
+            });
         });
     });
 
@@ -36,5 +49,10 @@ describe('AuthenticationService', function() {
                 done();
             });
         });
+    });
+
+    after(function() {
+        mockery.disable();
+        mockery.deregisterAll();
     });
 });

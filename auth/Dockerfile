@@ -9,6 +9,7 @@ RUN npm install
 COPY . .
 
 RUN mkdir -p /var/opt/certs
+RUN mkdir -p /var/opt/jwt
 
 EXPOSE 8000
 CMD ["npm", "start"]

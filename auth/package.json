@@ -16,8 +16,10 @@
     "express": "^4.17.1",
     "express-winston": "^4.0.3",
     "helmet": "^3.22.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.9",
     "node-input-validator": "^4.2.0",
+    "otplib": "^12.0.1",
     "uuid": "^7.0.3",
     "winston": "^3.2.1"
   },

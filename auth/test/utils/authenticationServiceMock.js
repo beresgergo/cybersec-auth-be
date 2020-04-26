@@ -1,10 +1,16 @@
 'use strict';
 
-module.exports.authenticationServiceMock = {
-    createAuthenticationToken: () => 'authToken',
-    validateToken: (_) => {
-        return new Promise((resolve, _) => {
-            resolve(true);
-        });
-    }
+module.exports.moduleName = '../services/authenticationService';
+
+module.exports.createAuthenticationToken = (_) => {
+    return new Promise((resolve, _) => {
+        resolve('authToken');
+    });
 };
+
+module.exports.validateToken = (_) => {
+    return new Promise((resolve, _) => {
+        resolve();
+    });
+};
+

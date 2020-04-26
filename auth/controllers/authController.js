@@ -1,12 +1,16 @@
 'use strict';
 
+const AUTHENTICATION_CONSTANTS = require('../utils/authenticationConstants');
+const CONFIGURATION = require('../config/index');
 const HTTP_CONSTANTS = require('../utils/httpConstants');
 const MESSAGES = require('../utils/messages');
 
-const { createVerify } = require('crypto');
 const userStore = require('../models/userStore');
-const authenticationService = require('../services/authentiationService');
+const authenticationService = require('../services/authenticationService');
+const { isSessionValid } = require('../services/sessionValidatorService');
 
+const { createVerify } = require('crypto');
+const { totp } = require('otplib');
 const { v4 : uuid } = require('uuid');
 
 module.exports.startAuthentication = (req, res) => {
@@ -23,21 +27,74 @@ module.exports.startAuthentication = (req, res) => {
                 return;
             }
             session.username = username;
+            session.preferredAuthType = result.preferredAuthType;
+
             return session.save();
         }).then(_ => {
             return res
                 .status(HTTP_CONSTANTS.HTTP_OK)
-                .json({ sessionId : session.id });
+                .json({
+                    sessionId: session.id,
+                    preferredAuthType: session.preferredAuthType
+                });
+        });
+};
+
+module.exports.verifyTotpToken = (req, res) => {
+    const session = res.locals.session;
+    const preferredAuthType = session.preferredAuthType;
+
+    if (!session.username && !session.preferredAuthType) {
+        res
+            .status(HTTP_CONSTANTS.BAD_REQUEST)
+            .json({ message : MESSAGES.DATA_MISSING_FROM_SESSION });
+        return;
+    }
+
+    if (preferredAuthType === AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_RSA) {
+        res
+            .status(HTTP_CONSTANTS.BAD_REQUEST)
+            .json({ message : MESSAGES.AUTHENTICATION_TYPE_MISMATCH });
+        return;
+    }
+
+    totp.options = CONFIGURATION.TOTP_OPTIONS;
+    userStore
+        .findOne({ username: session.username })
+        .then( result => {
+            const isValid = totp.check(req.body.token, result.totpSecret);
+
+            if (!isValid) {
+                res.status(HTTP_CONSTANTS.BAD_REQUEST)
+                    .json({ message : MESSAGES.INVALID_TOTP_TOKEN});
+                return;
+            }
+
+            session.totpDone = true;
+            session.save()
+                .then(_ => {
+                    res
+                        .status(HTTP_CONSTANTS.HTTP_OK)
+                        .json({ status: MESSAGES.STATUS_OK });
+                });
         });
 };
 
 module.exports.generateChallenge = (req, res) => {
     const session = res.locals.session;
+    const preferredAuthType = session.preferredAuthType;
 
-    if (!session.username) {
+    if (!session.username && !session.preferredAuthType) {
         res
             .status(HTTP_CONSTANTS.BAD_REQUEST)
             .json({ message : MESSAGES.DATA_MISSING_FROM_SESSION });
+        return;
+    }
+
+    if (preferredAuthType === AUTHENTICATION_CONSTANTS.PREFERRED_AUTHENTICATION_TOTP) {
+        res
+            .status(HTTP_CONSTANTS.BAD_REQUEST)
+            .json({ message : MESSAGES.AUTHENTICATION_TYPE_MISMATCH });
         return;
     }
 
@@ -73,31 +130,45 @@ module.exports.checkSignature = (req, res) => {
             const success = verify.verify(publicKey, signedChallenge);
 
             if(!success) {
-                return res
+                res
                     .status(HTTP_CONSTANTS.BAD_REQUEST)
                     .json({ message : MESSAGES.INVALID_SIGNATURE });
+                return;
             }
 
             return res
                 .status(HTTP_CONSTANTS.HTTP_OK)
                 .json({
-                    token: authenticationService.createAuthenticationToken()
+                    message: MESSAGES.STATUS_OK
                 });
         });
 };
 
-module.exports.validateAuthToken = (req, res, next) => {
-    const promise = authenticationService.validateToken(req.body.token);
+module.exports.token = (req, res) => {
+    const session = res.locals.session;
 
-    promise.then(next, () => {
-        return res.status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED).json({failed: true});
-    });
+    if (!isSessionValid(session)) {
+        res
+            .status(HTTP_CONSTANTS.BAD_REQUEST)
+            .json({ message : MESSAGES.AUTHENTICATION_TYPE_MISMATCH });
+        return;
+    }
+
+    authenticationService
+        .createAuthenticationToken()
+        .then(token => {
+            return res
+                .status(HTTP_CONSTANTS.HTTP_OK)
+                .json({ token: token });
+        });
 };
 
-module.exports.protectedResource = (req, res) => {
-    return res
-        .status(HTTP_CONSTANTS.HTTP_OK)
-        .json({
-            secure: true
-        });
+module.exports.validateAuthToken = (req, res) => {
+    const promise = authenticationService.validateToken(req.body.token);
+
+    promise.then(() => {
+        return res.status(HTTP_CONSTANTS.HTTP_OK).json({ status: MESSAGES.STATUS_OK });
+    }, () => {
+        return res.status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED).json({ status : MESSAGES.INVALID_JWT_TOKEN });
+    });
 };
