@@ -21,7 +21,6 @@ services:
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
       - /private/etc/localtime:/etc/localtime:ro
     environment:
-      - LOG_LEVEL=1
       - CONNECTION_STRING=mongodb://credentialstore:27017/
   auth:
     networks:
@@ -40,6 +39,8 @@ services:
       - ./ssl/cyberauth_auth.key:/var/opt/certs/cyberauth_auth.key:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
       - /private/etc/localtime:/etc/localtime:ro
+    environment:
+      - CONNECTION_STRING=mongodb://credentialstore:27017/
   registration:
     networks:
       - node_net
@@ -49,7 +50,7 @@ services:
       - credentialstore
     image: gergob/cyber-auth-be-registration
     container_name: cyber-auth-be-registration
-    build: ./registration
+    build: ./registr  ation
     ports:
       - "8082:8000"
     volumes:

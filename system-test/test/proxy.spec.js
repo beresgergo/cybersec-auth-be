@@ -1,6 +1,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { generateKeyPairSync } = require('crypto');
+const { authenticator } = require('otplib');
 const rsaUtils = require('../utils/rsaUtils');
 const expect = chai.expect;
 
@@ -16,8 +17,11 @@ describe('Sample', function () {
     });
 });
 
+const secret = authenticator.generateSecret(32);
+
 describe('Proxy', function () {
     const requester = chai.request('https://localhost:8080').keepOpen();
+    let testPrivateKey;
 
     describe('#GET checkUsername', function () {
         it('should check if the given username is already occupied', function (done) {
@@ -32,14 +36,14 @@ describe('Proxy', function () {
         });
     });
 
-    describe('#post setPassword', function () {
+    describe('#post totpSecret', function () {
         it('is not allowed to be called before the username check', function (done) {
             requester
-                .post('/user/testuser/setPassword')
+                .post('/user/testuser/totpSecret')
                 .type('json')
                 .send({
                     sessionId: '1',
-                    password: 'password'
+                    totpSecret: secret
                 })
                 .then((res) => {
                     expect(res.status).to.be.eq(400);
@@ -54,162 +58,60 @@ describe('Proxy', function () {
                     expect(res.status).to.be.eq(200);
                     expect(res.body.status).to.be.eq('OK');
                     expect(res.body.sessionId).not.to.be.null;
-                    return requester.post('/user/testuser/setPassword')
+                    return requester.post('/user/testuser/totpSecret')
                         .type('json')
                         .send({
                             sessionId: res.body.sessionId,
-                            password: 'password'
+                            totpSecret: secret
                         })
                 }).then(res => {
                     expect(res.status).to.be.eq(200);
                     expect(res.body.status).to.be.eq('OK');
                     done();
                 });
-        });
-    });
-
-    describe('#post confirmPassword', function () {
-        it('is not allowed to be called before the setting the password', function (done) {
-            requester
-                .post('/user/testuser/setPassword')
-                .type('json')
-                .send({
-                    sessionId: '1',
-                    password: 'password'
-                })
-                .then((res) => {
-                    expect(res.status).to.be.eq(400);
-                    done();
-                })
-        });
-
-        it('the confirmed password should match the previously set one', function (done) {
-            var sessionId;
-            requester
-                .get('/user/testuser')
-                .then((res) => {
-                    expect(res.status).to.be.eq(200);
-                    expect(res.body.status).to.be.eq('OK');
-                    expect(res.body.sessionId).not.to.be.null;
-                    sessionId = res.body.sessionId;
-                    return requester.post('/user/testuser/setPassword')
-                        .type('json')
-                        .send({
-                            sessionId: sessionId,
-                            password: 'password'
-                        })
-                }).then(res => {
-                    expect(res.status).to.be.eq(200);
-                    return requester.post('/user/testuser/confirmPassword')
-                        .type('json')
-                        .send({
-                            sessionId: sessionId,
-                            confirmPassword: 'password1'
-                        });
-                }).then(res => {
-                    expect(res.status).to.be.eq(400);
-                    done();
-            });
-        });
-
-        it('the confirmed password should match the previously set one to get HTTP OK', function (done) {
-            var sessionId;
-            requester
-                .get('/user/testuser')
-                .then((res) => {
-                    expect(res.status).to.be.eq(200);
-                    expect(res.body.status).to.be.eq('OK');
-                    expect(res.body.sessionId).not.to.be.null;
-                    sessionId = res.body.sessionId;
-                    return requester.post('/user/testuser/setPassword')
-                        .type('json')
-                        .send({
-                            sessionId: sessionId,
-                            password: 'password'
-                        })
-                }).then(res => {
-                expect(res.status).to.be.eq(200);
-                return requester.post('/user/testuser/confirmPassword')
-                    .type('json')
-                    .send({
-                        sessionId: sessionId,
-                        confirmPassword: 'password'
-                    });
-            }).then(res => {
-                expect(res.status).to.be.eq(200);
-                expect(res.body.status).to.be.eq('OK');
-                done();
-            });
         });
     });
 
     describe('#post finalize', function () {
-        xit('the confirmed password should match the previously set one to get HTTP OK', function(done) {
-            var sessionId;
-            requester
-                .get('/user/testuser')
-                .then((res) => {
-                    expect(res.status).to.be.eq(200);
-                    expect(res.body.status).to.be.eq('OK');
-                    expect(res.body.sessionId).not.to.be.null;
-                    sessionId = res.body.sessionId;
-                    return requester.post('/user/testuser/setPassword')
-                        .type('json')
-                        .send({
-                            sessionId: sessionId,
-                            password: 'password'
-                        })
-                }).then(res => {
-                    expect(res.status).to.be.eq(200);
-                    return requester.post('/user/testuser/confirmPassword')
-                        .type('json')
-                        .send({
-                            sessionId: sessionId,
-                            confirmPassword: 'password'
-                        });
-                }).then(res => {
-                    expect(res.status).to.be.eq(200);
-                    expect(res.body.status).to.be.eq('OK');
-                    return requester.post('/user/testuser/finalize')
-                        .type('json')
-                        .send({
-                            sessionId: sessionId
-                        });
-                }).then(res => {
-                    expect(res.status).to.be.eq(200);
-                    expect(res.body.status).to.be.eq('OK');
-                    done();
-                });
-        });
 
         it('can be called also after submitting a public key.', function (done) {
             let sessionId;
-            const { publicKey, _ } = generateKeyPairSync('rsa', {
+            const { publicKey, privateKey } = generateKeyPairSync('rsa', {
                 modulusLength: 2048,
                 publicKeyEncoding: rsaUtils.PUBLIC_KEY_ENCODING,
                 privateKeyEncoding: rsaUtils.PRIVATE_KEY_ENCODING
             });
-
+            testPrivateKey = privateKey;
             requester
                 .get('/user/testuser')
-                .then((res) => {
+                .then(res => {
                     expect(res.status).to.be.eq(200);
                     expect(res.body.status).to.be.eq('OK');
                     expect(res.body.sessionId).not.to.be.null;
                     sessionId = res.body.sessionId;
+                    return requester.post('/user/testuser/totpSecret')
+                        .type('json')
+                        .send({
+                            sessionId: sessionId,
+                            totpSecret: secret
+                        });
+                }).then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.status).to.be.eq('OK');
                     return requester.post('/user/testuser/publicKey')
                         .type('json')
                         .send({
                             sessionId: sessionId,
                             publicKey: Buffer.from(publicKey).toString('base64')
-                        })
+                        });
                 }).then(res => {
                     expect(res.status).to.be.eq(200);
                     expect(res.body.status).to.be.eq('OK');
                     return requester.post('/user/testuser/finalize')
                         .type('json')
                         .send({
-                            sessionId: sessionId
+                            sessionId: sessionId,
+                            preferredAuthType: 'MFA'
                         });
                 }).then(res => {
                     expect(res.status).to.be.eq(200);
@@ -217,6 +119,10 @@ describe('Proxy', function () {
                     done();
                 });
         });
+
+    });
+
+    describe("#LOGIN", function() {
 
     });
 
@@ -231,18 +137,7 @@ describe('Proxy', function () {
         });
     });
 
-    describe('#GET auth', function () {
-        it('should always return an authentication token', function (done) {
-            requester
-                .get('/auth')
-                .then(function (res) {
-                    expect(res.body.authorizationToken).to.be.eq('authToken');
-                    done();
-                });
-        });
-    });
-
-    describe('#POST protected', function () {
+    xdescribe('#POST protected', function () {
         it('is not allowed to be called without a valid token', function (done) {
             requester
                 .post('/protected')

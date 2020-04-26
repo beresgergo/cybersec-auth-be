@@ -39,7 +39,7 @@ describe('Registration Controller', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1');
+            response.locals.session = createSessionMock({ id: '1' });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -62,7 +62,7 @@ describe('Registration Controller', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1');
+            response.locals.session = createSessionMock({ id: '1' });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -78,7 +78,7 @@ describe('Registration Controller', function() {
         });
     });
 
-    describe('#setPassword', function() {
+    describe('#setTotpSecret', function() {
         it('should return HTTP BAD request if username is not present in the session', function(done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({
@@ -88,11 +88,11 @@ describe('Registration Controller', function() {
                     username: 'username'
                 },
                 body: {
-                    password: 'password'
+                    totpSecret: 'totpSecret'
                 }
             });
 
-            response.locals.session = createSessionMock('1');
+            response.locals.session = createSessionMock({ id: '1' });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -102,7 +102,7 @@ describe('Registration Controller', function() {
                 done();
             });
 
-            registrationController.setPassword(request, response);
+            registrationController.totpSecret(request, response);
         });
 
         it('should return HTTP OK with and store the password in the session object', function(done) {
@@ -114,108 +114,28 @@ describe('Registration Controller', function() {
                     username: 'username'
                 },
                 body: {
-                    password: 'password'
+                    totpSecret: 'totpSecret'
                 }
             });
 
-            response.locals.session = createSessionMock('1', 'username');
+            response.locals.session = createSessionMock({ username: 'username' });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
                 expect(response.locals.session.username).to.be.equal('username');
-                expect(response.locals.session.setPassword).to.be.equal('password');
+                expect(response.locals.session.totpSecret).to.be.equal('totpSecret');
                 expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
                 const payload = JSON.parse(response._getData());
                 expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
                 done();
             });
 
-            registrationController.setPassword(request, response);
-        });
-    });
-
-    describe('#confirmPassword', function() {
-        it('should return HTTP BAD REQUEST if the session does not contain the setPassword field', function(done) {
-            const response = buildResponse();
-            const request = httpMocks.createRequest({
-                method: 'POST',
-                url: '/user/:username/confirmPassword',
-                params: {
-                    username: 'username'
-                },
-                body: {
-                    confirmPassword: 'password'
-                }
-            });
-
-            response.locals.session = createSessionMock('1', 'username');
-
-            response.on('end', () => {
-                expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
-                const payload = JSON.parse(response._getData());
-                expect(payload.message).to.be.equal(MESSAGES.DATA_MISSING_FROM_SESSION);
-                done();
-            });
-
-            registrationController.confirmPassword(request, response);
-        });
-
-        it('should return HTTP BAD REQUEST if the password from session does not match with the http body', function(done) {
-            const response = buildResponse();
-            const request = httpMocks.createRequest({
-                method: 'POST',
-                url: '/user/:username/confirmPassword',
-                params: {
-                    username: 'username'
-                },
-                body: {
-                    confirmPassword: 'password'
-                }
-            });
-
-            response.locals.session = createSessionMock('1', 'username', 'password1');
-
-            response.on('end', () => {
-                expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.BAD_REQUEST);
-                const payload = JSON.parse(response._getData());
-                expect(payload.message).to.be.equal(MESSAGES.PASSWORD_MISMATCH);
-                done();
-            });
-
-            registrationController.confirmPassword(request, response);
-        });
-
-        it('should return HTTP OK and store the value in the session object', function(done) {
-            const response = buildResponse();
-            const request = httpMocks.createRequest({
-                method: 'POST',
-                url: '/user/:username/confirmPassword',
-                params: {
-                    username: 'username'
-                },
-                body: {
-                    confirmPassword: 'password'
-                }
-            });
-
-            response.locals.session = response.locals.session = createSessionMock('1', 'username', 'password');
-
-            response.on('end', () => {
-                expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
-                const payload = JSON.parse(response._getData());
-                expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
-                done();
-            });
-
-            registrationController.confirmPassword(request, response);
+            registrationController.totpSecret(request, response);
         });
     });
 
     describe('#publicKey', function() {
-        it('should return HTTP BAD REQUEST if username is not present in the session', function(done) {
+        it('should return HTTP BAD REQUEST if totpSecret is not present in the session', function(done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({
                 method: 'POST',
@@ -228,7 +148,7 @@ describe('Registration Controller', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1');
+            response.locals.session = createSessionMock({ });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -254,7 +174,7 @@ describe('Registration Controller', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1', 'username');
+            response.locals.session = createSessionMock({ totpSecret: 'totpSecret' });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -269,7 +189,7 @@ describe('Registration Controller', function() {
     });
 
     describe('#finalize', function() {
-        it('should return HTTP BAD REQUEST if neither confirmPassword nor publicKey field is not present in the session', function(done) {
+        it('should return HTTP BAD REQUEST if publicKey field is not present in the session', function(done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({
                 method: 'POST',
@@ -279,7 +199,7 @@ describe('Registration Controller', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1', 'username', 'password');
+            response.locals.session = createSessionMock({});
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -302,7 +222,7 @@ describe('Registration Controller', function() {
                 }
             });
 
-            response.locals.session = createSessionMock('1', 'username', '', '', 'publicKey');
+            response.locals.session = createSessionMock({ publicKey : 'publicKey' });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -315,28 +235,6 @@ describe('Registration Controller', function() {
             registrationController.finalize(request, response);
         });
 
-        it('should return HTTP OK and store the user credentials in the appropriate store', function(done) {
-            const response = buildResponse();
-            const request = httpMocks.createRequest({
-                method: 'POST',
-                url: '/user/:username/finalize',
-                params: {
-                    username: 'username'
-                }
-            });
-
-            response.locals.session = createSessionMock('1', 'username', 'password', 'password');
-
-            response.on('end', () => {
-                expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
-                const payload = JSON.parse(response._getData());
-                expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
-                done();
-            });
-
-            registrationController.finalize(request, response);
-        });
     });
 
     after(function() {

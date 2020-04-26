@@ -31,7 +31,7 @@ module.exports.checkUsername = (req, res) => {
         });
 };
 
-module.exports.setPassword = (req, res) => {
+module.exports.totpSecret = (req, res) => {
     const session = res.locals.session;
     if (!session.username) {
         return res
@@ -39,35 +39,7 @@ module.exports.setPassword = (req, res) => {
             .json({ message : MESSAGES.DATA_MISSING_FROM_SESSION });
     }
 
-    session.setPassword = req.body.password;
-    session
-        .save()
-        .then(_ => {
-            res
-                .status(HTTP_CONSTANTS.HTTP_OK)
-                .json({ status: MESSAGES.STATUS_OK });
-        });
-};
-
-module.exports.confirmPassword = (req, res) => {
-    const session = res.locals.session;
-    const confirmPassword = req.body.confirmPassword;
-
-    if (!session.setPassword) {
-        res
-            .status(HTTP_CONSTANTS.BAD_REQUEST)
-            .json({ message : MESSAGES.DATA_MISSING_FROM_SESSION });
-        return;
-    }
-
-    if (session.setPassword !== confirmPassword) {
-        res
-            .status(HTTP_CONSTANTS.BAD_REQUEST)
-            .json({ message : MESSAGES.PASSWORD_MISMATCH });
-        return;
-    }
-
-    session.confirmPassword = confirmPassword;
+    session.totpSecret = req.body.totpSecret;
     session
         .save()
         .then(_ => {
@@ -81,7 +53,7 @@ module.exports.publicKey = (req, res) => {
     const session = res.locals.session;
     const publicKey = req.body.publicKey;
 
-    if (!session.username) {
+    if (!session.totpSecret) {
         res
             .status(HTTP_CONSTANTS.BAD_REQUEST)
             .json({ message : MESSAGES.DATA_MISSING_FROM_SESSION });
@@ -101,8 +73,9 @@ module.exports.publicKey = (req, res) => {
 
 module.exports.finalize = (req, res) => {
     const session = res.locals.session;
+    const preferredAuthType = req.body.preferredAuthType;
 
-    if (!session.confirmPassword && !session.publicKey) {
+    if (!session.publicKey) {
         res
             .status(HTTP_CONSTANTS.BAD_REQUEST)
             .json({ message : MESSAGES.DATA_MISSING_FROM_SESSION });
@@ -111,8 +84,9 @@ module.exports.finalize = (req, res) => {
 
     userStore({
         username: session.username,
-        password: session.setPassword,
-        publicKey: session.publicKey
+        totpSecret: session.totpSecret,
+        publicKey: session.publicKey,
+        preferredAuthType: preferredAuthType
     }).save().then(_ => {
         res
             .status(HTTP_CONSTANTS.HTTP_OK)

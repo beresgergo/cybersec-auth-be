@@ -5,8 +5,7 @@ const mongoose = require('mongoose');
 const sessionSchema = mongoose.Schema({
     id: { type: String, indexed: true },
     username: String,
-    setPassword: String,
-    confirmPassword: String,
+    totpSecret: String,
     publicKey: String,
     validUntil: Date
 });

@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports.createSessionMock = (id, username, setPassword, confirmPassword, publicKey) => {
+module.exports.createSessionMock = (opts) => {
     return {
-        id: id || '',
-        username: username || '',
-        setPassword: setPassword || '',
-        confirmPassword: confirmPassword || '',
-        publicKey: publicKey || '',
+        id: opts.id || '',
+        username: opts.username || '',
+        totpSecret: opts.totpSecret || '',
+        publicKey:opts.publicKey || '',
+        preferredAuth: opts.preferredAuth || '',
         save: function() {
             return {
                 then: cb => cb()

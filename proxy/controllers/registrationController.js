@@ -33,25 +33,8 @@ module.exports.checkUsername = (req, res) => {
     });
 };
 
-module.exports.setPassword = (req, res) => {
-    const opts = CONFIGURATION.createSetPasswordOptions(req.params.username);
-    opts.opts.body = JSON.stringify(req.body);
-
-    fetch(opts.url, opts.opts).then(response => {
-        if (!response.ok) {
-            handleHttpError(response, res)
-        }
-
-        return response.json();
-    }).then(body => {
-        return res
-            .status(HTTP_OK)
-            .json(body);
-    });
-};
-
-module.exports.confirmPassword = (req, res) => {
-    const opts = CONFIGURATION.createConfirmPasswordOptions(req.params.username);
+module.exports.totpSecret = (req, res) => {
+    const opts = CONFIGURATION.createTotpSecretOptions(req.params.username);
     opts.opts.body = JSON.stringify(req.body);
 
     fetch(opts.url, opts.opts).then(response => {

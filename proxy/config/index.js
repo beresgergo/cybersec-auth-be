@@ -20,21 +20,9 @@ module.exports.createCheckUsernameOptions = function(userId) {
     };
 };
 
-module.exports.createSetPasswordOptions = function(userId) {
+module.exports.createTotpSecretOptions = function(userId) {
     return {
-        url: 'https://registration:8000/user/' + userId + '/setPassword',
-        opts: {
-            method: HTTP_CONSTANTS.HTTP_METHOD_POST,
-            headers: {
-                'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
-            }
-        }
-    };
-};
-
-module.exports.createConfirmPasswordOptions = function(userId) {
-    return {
-        url: 'https://registration:8000/user/' + userId + '/confirmPassword',
+        url: 'https://registration:8000/user/' + userId + '/totpSecret',
         opts: {
             method: HTTP_CONSTANTS.HTTP_METHOD_POST,
             headers: {

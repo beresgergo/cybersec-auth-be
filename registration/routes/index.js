@@ -9,13 +9,9 @@ router.get('/user/:username',
     sessionController.createSession,
     registrationController.checkUsername);
 
-router.post('/user/:username/setPassword',
+router.post('/user/:username/totpSecret',
     sessionController.populateSession,
-    registrationController.setPassword);
-
-router.post('/user/:username/confirmPassword',
-    sessionController.populateSession,
-    registrationController.confirmPassword);
+    registrationController.totpSecret);
 
 router.post('/user/:username/publicKey',
     sessionController.populateSession,
