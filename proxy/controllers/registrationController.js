@@ -1,22 +1,11 @@
 'use strict';
 
 const CONFIGURATION = require('../config/index');
+
+const { handleHttpError } = require('../utils/httpHelpers');
+const { HTTP_OK } = require('../utils/httpConstants');
+
 const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
-const winston = require('winston');
-const LOG = winston.createLogger(CONFIGURATION.LOGGING_OPTIONS);
-
-const HTTP_OK = 200;
-
-function handleHttpError(response, res) {
-    response
-        .json()
-        .then(body => {
-            LOG.error('Request failed with statusCode:' + response.statusCode);
-            LOG.error('Payload ' + JSON.stringify(response.error));
-            res.status(response.status);
-            res.json(body);
-        });
-}
 
 module.exports.checkUsername = (req, res) => {
     const opts = CONFIGURATION.createCheckUsernameOptions(req.params.username);

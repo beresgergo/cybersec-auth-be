@@ -1,53 +1,71 @@
 'use strict';
 
 const CONFIGURATION = require('../config/index');
-const HTTP_CONSTANTS = require('../utils/httpConstants');
+
+const { handleHttpError } = require('../utils/httpHelpers');
+const { HTTP_OK } = require('../utils/httpConstants');
 
 const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
 
-module.exports.getAuthenticationToken = (req, res) => {
-    fetch(CONFIGURATION.AUTH_BASE_CONFIG.url).then(response => {
-        return response.json();
-    }).then(body => {
-        return res
-            .status(HTTP_CONSTANTS.HTTP_OK)
-            .json({
-                authorizationToken: body.token
-            });
-    }, () => {
-        return res
-            .status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED)
-            .json({
-                failed: 'failed'
-            });
-    });
-};
+module.exports.startAuthentication = (req, res) => {
+    const opts = CONFIGURATION.createAuthenticationStartOptions(req.params.username);
 
-module.exports.getProtectedResource = (req, res) => {
-    const opts = CONFIGURATION.PROTECTED_RESOURCE_CONFIG.opts;
-    opts.body = JSON.stringify(req.body);
-
-    fetch(CONFIGURATION.PROTECTED_RESOURCE_CONFIG.url, opts).then(response => {
+    fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
-            throw Error(response.statusText);
+            handleHttpError(response, res);
         }
-
         return response.json();
     }).then(body => {
         return res
-            .status(HTTP_CONSTANTS.HTTP_OK)
+            .status(HTTP_OK)
             .json(body);
-    }).catch(() => {
-        return res
-            .status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED)
-            .json({});
     });
 };
 
-module.exports.ping = (req, res) => {
-    return res
-        .status(HTTP_CONSTANTS.HTTP_OK)
-        .json({
-            status: 'OK'
-        });
+module.exports.verifyTotpToken = (req, res) => {
+    const opts = CONFIGURATION.postTotpTokenOptions;
+    opts.opts.body = JSON.stringify(req.body);
+
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res);
+        }
+        return response.json();
+    }).then(body => {
+        return res
+            .status(HTTP_OK)
+            .json(body);
+    });
+};
+
+module.exports.retrieveToken = (req, res) => {
+    const opts = CONFIGURATION.retrieveTokenOptions;
+    opts.opts.body = JSON.stringify(req.body);
+
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res);
+        }
+        return response.json();
+    }).then(body => {
+        return res
+            .status(HTTP_OK)
+            .json(body);
+    });
+};
+
+module.exports.validateAuthToken = (req, res) => {
+    const opts = CONFIGURATION.validateTokenOptions;
+    opts.opts.body = JSON.stringify(req.body);
+
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res);
+        }
+        return response.json();
+    }).then(body => {
+        return res
+            .status(HTTP_OK)
+            .json(body);
+    });
 };

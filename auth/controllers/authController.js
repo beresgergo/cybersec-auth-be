@@ -26,6 +26,7 @@ module.exports.startAuthentication = (req, res) => {
                     .json({ message : MESSAGES.USERNAME_NOT_FOUND });
                 return;
             }
+
             session.username = username;
             session.preferredAuthType = result.preferredAuthType;
 
@@ -59,6 +60,7 @@ module.exports.verifyTotpToken = (req, res) => {
     }
 
     totp.options = CONFIGURATION.TOTP_OPTIONS;
+
     userStore
         .findOne({ username: session.username })
         .then( result => {
@@ -66,7 +68,7 @@ module.exports.verifyTotpToken = (req, res) => {
 
             if (!isValid) {
                 res.status(HTTP_CONSTANTS.BAD_REQUEST)
-                    .json({ message : MESSAGES.INVALID_TOTP_TOKEN});
+                    .json({ message : MESSAGES.INVALID_TOTP_TOKEN });
                 return;
             }
 

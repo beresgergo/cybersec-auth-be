@@ -56,20 +56,52 @@ module.exports.createFinalizeOptions = function(userId) {
     };
 };
 
-module.exports.AUTH_BASE_CONFIG = {
-    url: 'https://auth:8000/auth',
-    opts: {
-        method: HTTP_CONSTANTS.HTTP_METHOD_GET
-    }
+module.exports.createAuthenticationStartOptions = userId => {
+    return {
+        url: 'https://auth:8000/login/' + userId,
+        opts: {
+            method: HTTP_CONSTANTS.HTTP_METHOD_GET,
+            headers: {
+                'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+            }
+        }
+    };
 };
 
-module.exports.PROTECTED_RESOURCE_CONFIG = {
-    url: 'https://auth:8000/protected',
+module.exports.postTotpTokenOptions = {
+    url: 'https://auth:8000/login/otpToken',
     opts: {
         method: HTTP_CONSTANTS.HTTP_METHOD_POST,
         headers: {
             'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
         }
+    }
+};
+
+module.exports.retrieveTokenOptions = {
+    url: 'https://auth:8000/retrieveToken',
+    opts: {
+        method: HTTP_CONSTANTS.HTTP_METHOD_POST,
+        headers: {
+            'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+        }
+    }
+};
+
+module.exports.validateTokenOptions = {
+    url: 'https://auth:8000/verifyToken',
+    opts: {
+        method: HTTP_CONSTANTS.HTTP_METHOD_POST,
+        headers: {
+            'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+        }
+    }
+};
+
+module.exports.AUTH_BASE_CONFIG = {
+    url: 'https://auth:8000/',
+    opts: {
+        method: HTTP_CONSTANTS.HTTP_METHOD_GET
     }
 };
 

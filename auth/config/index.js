@@ -33,12 +33,12 @@ module.exports.JWT = {
     options: {
         algorithm: 'RS256',
         expiresIn: '2m'
-    }
+    },
+    signOptions: { algorithms: ['RS256'] }
 };
 
 module.exports.TOTP_OPTIONS = {
-    digits: 6,
-    algorithm: 'sha256'
+    digits: 6
 };
 
 module.exports.SERVER_PORT = 8000;
