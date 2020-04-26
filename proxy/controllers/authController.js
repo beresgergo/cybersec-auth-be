@@ -13,6 +13,7 @@ module.exports.startAuthentication = (req, res) => {
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
             handleHttpError(response, res);
+            return;
         }
         return response.json();
     }).then(body => {
@@ -29,6 +30,41 @@ module.exports.verifyTotpToken = (req, res) => {
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
             handleHttpError(response, res);
+            return;
+        }
+        return response.json();
+    }).then(body => {
+        return res
+            .status(HTTP_OK)
+            .json(body);
+    });
+};
+
+module.exports.generateChallenge = (req, res) => {
+    const opts = CONFIGURATION.generateChallengeOptions;
+    opts.opts.body = JSON.stringify(req.body);
+
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res);
+            return;
+        }
+        return response.json();
+    }).then(body => {
+        return res
+            .status(HTTP_OK)
+            .json(body);
+    });
+};
+
+module.exports.checkSignature = (req, res) => {
+    const opts = CONFIGURATION.checkSignatureOptions;
+    opts.opts.body = JSON.stringify(req.body);
+
+    fetch(opts.url, opts.opts).then(response => {
+        if (!response.ok) {
+            handleHttpError(response, res);
+            return;
         }
         return response.json();
     }).then(body => {
@@ -45,6 +81,7 @@ module.exports.retrieveToken = (req, res) => {
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
             handleHttpError(response, res);
+            return;
         }
         return response.json();
     }).then(body => {
@@ -61,6 +98,7 @@ module.exports.validateAuthToken = (req, res) => {
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
             handleHttpError(response, res);
+            return;
         }
         return response.json();
     }).then(body => {

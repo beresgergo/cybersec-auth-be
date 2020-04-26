@@ -78,6 +78,26 @@ module.exports.postTotpTokenOptions = {
     }
 };
 
+module.exports.generateChallengeOptions = {
+    url: 'https://auth:8000/login/challenge',
+    opts: {
+        method: HTTP_CONSTANTS.HTTP_METHOD_POST,
+        headers: {
+            'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+        }
+    }
+};
+
+module.exports.checkSignatureOptions = {
+    url: 'https://auth:8000/login/signedChallenge',
+    opts: {
+        method: HTTP_CONSTANTS.HTTP_METHOD_POST,
+        headers: {
+            'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+        }
+    }
+};
+
 module.exports.retrieveTokenOptions = {
     url: 'https://auth:8000/retrieveToken',
     opts: {

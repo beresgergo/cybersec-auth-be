@@ -17,7 +17,7 @@ module.exports.createAuthenticationToken = () => {
     });
 };
 
-module.exports.validateToken = (token) => {
+module.exports.validateToken = token => {
     return new Promise((resolve, reject) => {
         verify(token, JWT.publicKey, JWT.signOptions,(error, _) => {
             if (error) {

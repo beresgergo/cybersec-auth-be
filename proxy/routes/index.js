@@ -8,8 +8,8 @@ const registrationController = require('../controllers/registrationController');
 // routes for login
 router.get('/login/:username', authenticationController.startAuthentication);
 router.post('/login/otpToken', authenticationController.verifyTotpToken);
-/*router.post('/login/challenge', authenticationController.generateChallenge);
-router.post('/login/signedChallenge', authenticationController.checkSignature);*/
+router.post('/login/challenge', authenticationController.generateChallenge);
+router.post('/login/signedChallenge', authenticationController.checkSignature);
 router.post('/login/retrieveToken', authenticationController.retrieveToken);
 router.post('/login/verifyToken', authenticationController.validateAuthToken);
 

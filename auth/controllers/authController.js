@@ -9,7 +9,7 @@ const userStore = require('../models/userStore');
 const authenticationService = require('../services/authenticationService');
 const { isSessionValid } = require('../services/sessionValidatorService');
 
-const { createVerify } = require('crypto');
+const { createVerify, constants } = require('crypto');
 const { totp } = require('otplib');
 const { v4 : uuid } = require('uuid');
 
@@ -126,10 +126,12 @@ module.exports.checkSignature = (req, res) => {
     userStore
         .findOne({ username: session.username })
         .then(result => {
-            const publicKey = Buffer.from(result.publicKey, 'base64').toString('utf-8');
             const verify = createVerify('SHA256');
             verify.update(session.challenge);
-            const success = verify.verify(publicKey, signedChallenge);
+            const success = verify.verify({
+                key: Buffer.from(result.publicKey, 'base64').toString('utf8'),
+                padding: constants.RSA_PKCS1_PSS_PADDING
+            }, signedChallenge, 'base64');
 
             if(!success) {
                 res
@@ -138,11 +140,14 @@ module.exports.checkSignature = (req, res) => {
                 return;
             }
 
-            return res
-                .status(HTTP_CONSTANTS.HTTP_OK)
-                .json({
-                    message: MESSAGES.STATUS_OK
-                });
+            session.rsaDone = true;
+            session.save().then(_ => {
+                return res
+                    .status(HTTP_CONSTANTS.HTTP_OK)
+                    .json({
+                        message: MESSAGES.STATUS_OK
+                    });
+            });
         });
 };
 

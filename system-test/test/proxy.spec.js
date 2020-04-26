@@ -1,9 +1,12 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { generateKeyPairSync } = require('crypto');
-const { authenticator, totp } = require('otplib');
+const fs = require('fs');
+const { createSign, constants } = require('crypto');
+const { totp } = require('otplib');
 const rsaUtils = require('../utils/rsaUtils');
 const expect = chai.expect;
+
+const path = require("path");
 
 chai.use(chaiHttp);
 
@@ -18,11 +21,11 @@ describe('Sample', function () {
 });
 
 const secret = 'FZSSOZRABY3WYOBXAAVSY4B2EQYUS4BBGFNVCEQQAUVREISNAU3A';
-const { publicKey, _ } = generateKeyPairSync('rsa', {
-    modulusLength: 2048,
-    publicKeyEncoding: rsaUtils.PUBLIC_KEY_ENCODING,
-    privateKeyEncoding: rsaUtils.PRIVATE_KEY_ENCODING
-});
+const keyPair = {
+    publicKey: fs.readFileSync(path.resolve(__dirname, './rsa-test.pubkey')),
+    privateKey: fs.readFileSync(path.resolve(__dirname, './rsa-test.key'))
+};
+
 const preferredAuthType = 'RSA';
 
 describe('Proxy', function () {
@@ -101,7 +104,7 @@ describe('Proxy', function () {
                         .type('json')
                         .send({
                             sessionId: sessionId,
-                            publicKey: Buffer.from(publicKey).toString('base64')
+                            publicKey: Buffer.from(keyPair.publicKey).toString('base64')
                         });
                 }).then(res => {
                     expect(res.status).to.be.eq(200);
@@ -168,6 +171,57 @@ describe('Proxy', function () {
                     expect(res.body.status).to.be.equal('OK');
                     done();
             });
+        });
+    });
+
+    describe("#signChallenged", function() {
+        it('should work with preferred authentication set to RSA', function (done) {
+            let sessionId;
+            requester
+                .get('/login/testuser')
+                .then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.preferredAuthType).to.be.eq(preferredAuthType);
+                    expect(res.body.sessionId).not.to.be.null;
+                    sessionId = res.body.sessionId;
+                    return requester.post('/login/challenge')
+                        .type('json')
+                        .send({
+                            sessionId: sessionId
+                        });
+                }).then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.challenge).not.to.be.null;
+                    const challenge = res.body.challenge;
+                    const sign = createSign('SHA256');
+                    sign.update(challenge);
+                    const signedChallenge = sign.sign({
+                        key: keyPair.privateKey,
+                        padding: constants.RSA_PKCS1_PSS_PADDING}, 'base64');
+                    return requester.post('/login/signedChallenge')
+                        .type('json')
+                        .send({
+                            sessionId: sessionId,
+                            signedChallenge: signedChallenge
+                        });
+                }).then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.message).to.be.equal('OK');
+                    return requester.post('/login/retrieveToken')
+                        .type('json')
+                        .send({ sessionId: sessionId });
+                }).then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.token).not.to.be.null;
+                    const jwt = res.body.token;
+                    return requester.post('/login/verifyToken')
+                        .type('json')
+                        .send({ token: jwt });
+                }).then(res => {
+                    expect(res.status).to.be.eq(200);
+                    expect(res.body.status).to.be.equal('OK');
+                    done();
+                });
         });
     });
 });
