@@ -10,3 +10,7 @@ module.exports.createVerify = _ => {
         }
     };
 };
+
+module.exports.constants = {
+    RSA_PKCS1_PSS_PADDING: 'RSA_PKCS1_PSS_PADDING'
+};

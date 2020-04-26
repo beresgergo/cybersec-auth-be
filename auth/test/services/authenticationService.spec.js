@@ -26,7 +26,7 @@ describe('AuthenticationService', function() {
     });
 
     describe('#validateToken', function() {
-        it('should resolve the promise if the input is authToken', function(done) {
+        xit('should resolve the promise if the input is authToken', function(done) {
             const promise = authenticationService.validateToken('authToken');
             promise.then(() => {
                 expect(true).to.be.true;
