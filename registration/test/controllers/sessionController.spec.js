@@ -8,8 +8,9 @@ const mockery = require('mockery');
 const HTTP_CONSTANTS = require('../../utils/httpConstants');
 const MESSAGES = require('../../utils/messages');
 const modelMockBuilder = require('../utils/mongooseModelMock');
+
 function buildResponse() {
-    return httpMocks.createResponse({eventEmitter: events.EventEmitter})
+    return httpMocks.createResponse({eventEmitter: events.EventEmitter});
 }
 
 mockery.enable({

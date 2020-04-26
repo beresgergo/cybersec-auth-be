@@ -23,7 +23,7 @@ module.exports.checkUsername = (req, res) => {
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
-            handleHttpError(response, res)
+            handleHttpError(response, res);
         }
         return response.json();
     }).then(body => {
@@ -39,7 +39,7 @@ module.exports.totpSecret = (req, res) => {
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
-            handleHttpError(response, res)
+            handleHttpError(response, res);
         }
 
         return response.json();
@@ -56,7 +56,7 @@ module.exports.publicKey = (req, res) => {
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
-            handleHttpError(response, res)
+            handleHttpError(response, res);
         }
 
         return response.json();
@@ -73,7 +73,7 @@ module.exports.finalize = (req, res) => {
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
-            handleHttpError(response, res)
+            handleHttpError(response, res);
         }
 
         return response.json();

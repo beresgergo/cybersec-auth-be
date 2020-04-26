@@ -9,7 +9,7 @@ const httpMocks = require('node-mocks-http');
 const mockery = require('mockery');
 
 function buildResponse() {
-    return httpMocks.createResponse({eventEmitter: events.EventEmitter})
+    return httpMocks.createResponse({eventEmitter: events.EventEmitter});
 }
 
 mockery.enable({

@@ -36,7 +36,7 @@ module.exports.getProtectedResource = (req, res) => {
     }).then(body => {
         return res
             .status(HTTP_CONSTANTS.HTTP_OK)
-            .json(body)
+            .json(body);
     }).catch(() => {
         return res
             .status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED)
