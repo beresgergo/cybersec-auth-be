@@ -7,18 +7,10 @@ const { totp } = require('otplib');
 
 const { TOTP_SECRET, RSA, AUTH_TYPE } = require('../utils/constants');
 
-const path = require("path");
-
 chai.use(chaiHttp);
 
 // TODO figure out how to handle self signed certificates in tests
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
-
-
-/*const keyPair1 = {
-    publicKey: fs.readFileSync(path.resolve(__dirname, './rsa-test.pubkey')),
-    privateKey: fs.readFileSync(path.resolve(__dirname, './rsa-test.key'))
-};*/
 
 describe('Proxy', function () {
     const requester = chai.request('https://localhost:8080').keepOpen();
