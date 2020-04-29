@@ -1,7 +1,7 @@
 {
 	"all": true,
 	"exclude": [
-		"express-registration.js",
+		"express-auth.js",
 		"config/*.js",
 		"models/*.js",
 		"routes/*.js",

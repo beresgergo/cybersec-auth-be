@@ -40,6 +40,8 @@ jobs:
         run: cd auth && npm install
       - name: Execute tests for auth component
         run: cd auth && npm test
+      - name: Execute coverage report for registration component
+        run: cd auth && npm run coverage
       - name: Execute npm audit on auth component
         run: cd auth && npm audit
       - name: Execute eslint on auth component
