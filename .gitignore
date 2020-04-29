@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+.nyc_output
 ssl/cyberauth_auth.*
 ssl/cyberauth_ca.*
 ssl/cyberauth_proxy.*
