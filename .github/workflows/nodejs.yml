@@ -22,6 +22,8 @@ jobs:
         run: cd proxy && npm install
       - name: Execute tests for proxy component
         run: cd proxy && npm test
+      - name: Execute coverage report for registration component
+        run: cd proxy && npm run coverage
       - name: Execute npm audit on proxy component
         run: cd proxy && npm audit
       - name: Execute eslint on proxy component
