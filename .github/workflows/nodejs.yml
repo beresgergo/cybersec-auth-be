@@ -24,7 +24,7 @@ jobs:
         run: cd proxy && npm test
       - name: Execute npm audit on proxy component
         run: cd proxy && npm audit
-      - name: Execute npm audit on proxy component
+      - name: Execute eslint on proxy component
         run: cd proxy && npm run lint
   auth-pipeline:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
         run: cd auth && npm test
       - name: Execute npm audit on auth component
         run: cd auth && npm audit
-      - name: Execute npm audit on auth component
+      - name: Execute eslint on auth component
         run: cd auth && npm run lint
   registration-pipeline:
     runs-on: ubuntu-latest
@@ -54,9 +54,9 @@ jobs:
         run: cd registration && npm install
       - name: Execute tests for registration component
         run: cd registration && npm test
-      - name: Execute tests for registration component
+      - name: Execute coverage report for registration component
         run: cd registration && npm run coverage
       - name: Execute npm audit on registration component
         run: cd registration && npm audit
-      - name: Execute npm audit on registration component
+      - name: Execute eslint on registration component
         run: cd registration && npm run lint
