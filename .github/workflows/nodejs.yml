@@ -10,50 +10,23 @@ on:
     branches: [ master ]
 
 jobs:
-  proxy-install:
+  proxy-pipeline:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-    - name: Install npm dependencies for proxy component
-      run: cd proxy && npm install
-  proxy-test:
-    runs-on: ubuntu-latest
-    needs: proxy-install
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+     - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
+      - name: Install npm dependencies for proxy component
+        run: cd proxy && npm install
       - name: Execute tests for proxy component
         run: cd proxy && npm test
-  proxy-audit:
-    runs-on: ubuntu-latest
-    needs: proxy-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
       - name: Execute npm audit on proxy component
         run: cd proxy && npm audit
-  proxy-lint:
-    runs-on: ubuntu-latest
-    needs: proxy-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
       - name: Execute npm audit on proxy component
         run: cd proxy && npm run lint
-  auth-install:
+  auth-pipeline:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -61,42 +34,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      - name: Install npm dependencies for proxy component
+      - name: Install npm dependencies for auth component
         run: cd auth && npm install
-  auth-test:
-    runs-on: ubuntu-latest
-    needs: auth-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Execute tests for proxy component
+      - name: Execute tests for auth component
         run: cd auth && npm test
-  auth-audit:
-    runs-on: ubuntu-latest
-    needs: auth-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Execute npm audit on proxy component
+      - name: Execute npm audit on auth component
         run: cd auth && npm audit
-  auth-lint:
-    runs-on: ubuntu-latest
-    needs: auth-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Execute npm audit on proxy component
+      - name: Execute npm audit on auth component
         run: cd auth && npm run lint
-  registration-install:
+  registration-pipeline:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -104,49 +50,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      - name: Install npm dependencies for proxy component
+      - name: Install npm dependencies for registration component
         run: cd registration && npm install
-  registration-test:
-    runs-on: ubuntu-latest
-    needs: registration-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Execute tests for proxy component
+      - name: Execute tests for registration component
         run: cd registration && npm test
-  registration-coverage:
-    runs-on: ubuntu-latest
-    needs: registration-test
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Execute tests for proxy component
+      - name: Execute tests for registration component
         run: cd registration && npm run coverage
-  registration-audit:
-    runs-on: ubuntu-latest
-    needs: registration-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Execute npm audit on proxy component
+      - name: Execute npm audit on registration component
         run: cd registration && npm audit
-  registration-lint:
-    runs-on: ubuntu-latest
-    needs: registration-install
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Execute npm audit on proxy component
+      - name: Execute npm audit on registration component
         run: cd registration && npm run lint
