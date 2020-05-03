@@ -11,7 +11,7 @@ module.exports.HTTP_CLIENT_DEFAULT_CONFIG = {
     ca: fs.readFileSync('/var/opt/certs/cyberauth_ca.crt')
 };
 
-module.exports.createCheckUsernameOptions = function(userId) {
+module.exports.createCheckUsernameOptions = userId => {
     return {
         url: 'https://registration:8000/user/' + userId,
         opts: {
@@ -20,7 +20,7 @@ module.exports.createCheckUsernameOptions = function(userId) {
     };
 };
 
-module.exports.createTotpSecretOptions = function(userId) {
+module.exports.createTotpSecretOptions = userId => {
     return {
         url: 'https://registration:8000/user/' + userId + '/totpSecret',
         opts: {
@@ -32,7 +32,7 @@ module.exports.createTotpSecretOptions = function(userId) {
     };
 };
 
-module.exports.createPublicKeyOptions = function(userId) {
+module.exports.createPublicKeyOptions = userId => {
     return {
         url: 'https://registration:8000/user/' + userId + '/publicKey',
         opts: {
@@ -44,7 +44,7 @@ module.exports.createPublicKeyOptions = function(userId) {
     };
 };
 
-module.exports.createFinalizeOptions = function(userId) {
+module.exports.createFinalizeOptions = userId => {
     return {
         url: 'https://registration:8000/user/' + userId + '/finalize',
         opts: {
@@ -122,6 +122,26 @@ module.exports.AUTH_BASE_CONFIG = {
     url: 'https://auth:8000/',
     opts: {
         method: HTTP_CONSTANTS.HTTP_METHOD_GET
+    }
+};
+
+module.exports.deleteUserOptions = {
+    url: 'https://userservice:8000/user',
+    opts: {
+        method: HTTP_CONSTANTS.HTTP_METHOD_DELETE,
+        headers: {
+            'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+        }
+    }
+};
+
+module.exports.changePreferredAuthType = {
+    url: 'https://userservice:8000/user/preferredAuthType',
+    opts: {
+        method: HTTP_CONSTANTS.HTTP_METHOD_POST,
+        headers: {
+            'Content-Type': HTTP_CONSTANTS.HTTP_APPLICATION_JSON
+        }
     }
 };
 
