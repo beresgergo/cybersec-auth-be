@@ -16,19 +16,27 @@ router.post('/login/retrieveToken', authenticationController.retrieveToken);
 
 // routes for registration
 router.get('/user/:username',
+    inputValidationController.setupValidValueHolders,
     inputValidationController.userNameValidator,
     registrationController.checkUsername);
 
 router.post('/user/:username/totpSecret',
+    inputValidationController.setupValidValueHolders,
     inputValidationController.userNameValidator,
+    inputValidationController.sessionIdValidator,
+    inputValidationController.totpValidator,
     registrationController.totpSecret);
 
 router.post('/user/:username/publicKey',
+    inputValidationController.setupValidValueHolders,
     inputValidationController.userNameValidator,
+    inputValidationController.sessionIdValidator,
     registrationController.publicKey);
 
 router.post('/user/:username/finalize',
+    inputValidationController.setupValidValueHolders,
     inputValidationController.userNameValidator,
+    inputValidationController.sessionIdValidator,
     registrationController.finalize);
 
 // routes for user service
