@@ -1,0 +1,17 @@
+{
+	"all": true,
+	"exclude": [
+		"express-user.js",
+		"config/*.js",
+		"models/*.js",
+		"routes/*.js",
+		"test/**/*.js"
+	],
+	"check-coverage": true,
+	"watermarks": {
+		"lines": [80, 95],
+		"functions": [80, 95],
+		"branches": [80, 95],
+		"statements": [80, 95]
+	}
+}
