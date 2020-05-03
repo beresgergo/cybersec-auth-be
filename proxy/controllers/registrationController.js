@@ -8,7 +8,7 @@ const { HTTP_OK } = require('../utils/httpConstants');
 const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
 
 module.exports.checkUsername = (req, res) => {
-    const opts = CONFIGURATION.createCheckUsernameOptions(req.params.username);
+    const opts = CONFIGURATION.createCheckUsernameOptions(res.locals.validated.username);
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
@@ -23,7 +23,7 @@ module.exports.checkUsername = (req, res) => {
 };
 
 module.exports.totpSecret = (req, res) => {
-    const opts = CONFIGURATION.createTotpSecretOptions(req.params.username);
+    const opts = CONFIGURATION.createTotpSecretOptions(res.locals.validated.username);
     opts.opts.body = JSON.stringify(req.body);
 
     fetch(opts.url, opts.opts).then(response => {
@@ -40,7 +40,7 @@ module.exports.totpSecret = (req, res) => {
 };
 
 module.exports.publicKey = (req, res) => {
-    const opts = CONFIGURATION.createPublicKeyOptions(req.params.username);
+    const opts = CONFIGURATION.createPublicKeyOptions(res.locals.validated.username);
     opts.opts.body = JSON.stringify(req.body);
 
     fetch(opts.url, opts.opts).then(response => {
@@ -57,7 +57,7 @@ module.exports.publicKey = (req, res) => {
 };
 
 module.exports.finalize = (req, res) => {
-    const opts = CONFIGURATION.createFinalizeOptions(req.params.username);
+    const opts = CONFIGURATION.createFinalizeOptions(res.locals.validated.username);
     opts.opts.body = JSON.stringify(req.body);
 
     fetch(opts.url, opts.opts).then(response => {

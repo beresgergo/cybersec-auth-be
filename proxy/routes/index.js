@@ -3,9 +3,9 @@
 const express = require('express');
 const router = express.Router();
 const authenticationController = require('../controllers/authController');
-const userServiceController = require('../controllers/userServiceController');
+const inputValidationController = require('../controllers/inputValidatorController');
 const registrationController = require('../controllers/registrationController');
-
+const userServiceController = require('../controllers/userServiceController');
 
 // routes for login
 router.get('/login/:username', authenticationController.startAuthentication);
@@ -15,10 +15,21 @@ router.post('/login/signedChallenge', authenticationController.checkSignature);
 router.post('/login/retrieveToken', authenticationController.retrieveToken);
 
 // routes for registration
-router.get('/user/:username', registrationController.checkUsername);
-router.post('/user/:username/totpSecret', registrationController.totpSecret);
-router.post('/user/:username/publicKey', registrationController.publicKey);
-router.post('/user/:username/finalize', registrationController.finalize);
+router.get('/user/:username',
+    inputValidationController.userNameValidator,
+    registrationController.checkUsername);
+
+router.post('/user/:username/totpSecret',
+    inputValidationController.userNameValidator,
+    registrationController.totpSecret);
+
+router.post('/user/:username/publicKey',
+    inputValidationController.userNameValidator,
+    registrationController.publicKey);
+
+router.post('/user/:username/finalize',
+    inputValidationController.userNameValidator,
+    registrationController.finalize);
 
 // routes for user service
 router.delete('/management/user', userServiceController.deleteUser);

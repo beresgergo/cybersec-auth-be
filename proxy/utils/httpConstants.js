@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports.HTTP_OK = 200;
+module.exports.HTTP_BAD_REQUEST = 401;
 module.exports.HTTP_UNAUTHORIZED = 401;
 
 module.exports.HTTP_METHOD_DELETE = 'DELETE';
