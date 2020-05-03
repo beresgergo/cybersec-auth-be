@@ -2,12 +2,19 @@
 
 const express = require('express');
 const router = express.Router();
+
+const authenticationController = require('../controllers/authenticationController');
 const registrationController = require('../controllers/registrationController');
 const sessionController = require('../controllers/sessionController');
+
 
 router.get('/user/:username',
     sessionController.createSession,
     registrationController.checkUsername);
+
+router.delete('/user/:username',
+    authenticationController.verifyToken,
+    registrationController.deleteUser);
 
 router.post('/user/:username/totpSecret',
     sessionController.populateSession,

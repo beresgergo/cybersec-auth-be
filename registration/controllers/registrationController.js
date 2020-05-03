@@ -4,8 +4,6 @@ const HTTP_CONSTANTS = require('../utils/httpConstants');
 const MESSAGES = require('../utils/messages');
 const userStore = require('../models/userStore');
 
-// userStore.deleteMany({});
-
 module.exports.checkUsername = (req, res) => {
     const session = res.locals.session;
     const username = req.params.username;
@@ -88,6 +86,14 @@ module.exports.finalize = (req, res) => {
         publicKey: session.publicKey,
         preferredAuthType: preferredAuthType
     }).save().then(_ => {
+        res
+            .status(HTTP_CONSTANTS.HTTP_OK)
+            .json({ status: MESSAGES.STATUS_OK });
+    });
+};
+
+module.exports.deleteUser = (req, res) => {
+    userStore.deleteOne({ username: res.locals.username }, _ => {
         res
             .status(HTTP_CONSTANTS.HTTP_OK)
             .json({ status: MESSAGES.STATUS_OK });

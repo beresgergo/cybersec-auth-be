@@ -237,6 +237,31 @@ describe('Registration Controller', function() {
 
     });
 
+    describe('#deleteUser', function () {
+        it('should return HTTP OK with an appropriate status message', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'DELETE',
+                url: '/user/',
+                params: {
+                    username: 'username'
+                }
+            });
+
+            response.locals.username = 'username';
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
+                const payload = JSON.parse(response._getData());
+                expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
+                done();
+            });
+
+            registrationController.deleteUser(request, response);
+        });
+    });
+
     after(function() {
         mockery.disable();
         mockery.deregisterAll();
