@@ -32,9 +32,12 @@ module.exports.JWT = {
     publicKey : fs.readFileSync('/var/opt/jwt/jwt_signer.pubkey'),
     options: {
         algorithm: 'RS256',
-        expiresIn: '2m'
+        expiresIn: '2 minutes'
     },
-    signOptions: { algorithms: ['RS256'] }
+    signOptions: {
+        algorithms: ['RS256'],
+        maxAge: '2 minutes'
+    }
 };
 
 module.exports.TOTP_OPTIONS = {

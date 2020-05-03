@@ -176,6 +176,6 @@ module.exports.validateAuthToken = (req, res) => {
     promise.then(() => {
         return res.status(HTTP_CONSTANTS.HTTP_OK).json({ status: MESSAGES.STATUS_OK });
     }, () => {
-        return res.status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED).json({ status : MESSAGES.INVALID_JWT_TOKEN });
+        return res.status(HTTP_CONSTANTS.HTTP_UNAUTHORIZED).json({ message : MESSAGES.INVALID_JWT_TOKEN });
     });
 };

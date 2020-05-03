@@ -8,9 +8,15 @@ module.exports.createAuthenticationToken = (_) => {
     });
 };
 
-module.exports.validateToken = (_) => {
-    return new Promise((resolve, _) => {
-        resolve();
+module.exports.validateToken = (token) => {
+    return new Promise((resolve, reject) => {
+        if (token === 'authToken') {
+            resolve();
+        }
+        else {
+            reject();
+        }
+
     });
 };
 

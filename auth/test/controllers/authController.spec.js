@@ -32,8 +32,8 @@ mockery.registerMock('uuid', {
 });
 
 mockery.registerMock(configurationMock.moduleName, configurationMock);
-
 mockery.registerMock(cryptoMock.moduleName, cryptoMock);
+
 
 mockery.registerMock('../models/userStore', modelMockBuilder.createModelMock({
     username: 'username',
@@ -97,7 +97,7 @@ describe('AuthenticationController', function() {
         });
     });
 
-    describe('verifyTotpToken', function () {
+    describe('#verifyTotpToken', function () {
 
         it('should return HTTP bad request if preferredAuthType and username are not present in the session', function (done) {
             const response = buildResponse();
@@ -384,6 +384,48 @@ describe('AuthenticationController', function() {
             });
 
             authenticationController.token(request, response);
+        });
+    });
+
+    describe('#validateAuthToken', function() {
+        it('should return HTTP Unauthorized if the token validation fails', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'POST',
+                url: '/verifyToken',
+                body: {
+                    token: 'notAuthToken'
+                }
+            });
+
+            authenticationController.validateAuthToken(request, response);
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_UNAUTHORIZED);
+                const payload = JSON.parse(response._getData());
+                expect(payload.message).to.be.equal(MESSAGES.INVALID_JWT_TOKEN);
+                done();
+            });
+        });
+
+        it('should return HTTP OK if the token validation succeeds', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method:'POST',
+                url: '/verifyToken',
+                body: {
+                    token: 'authToken'
+                }
+            });
+
+            authenticationController.validateAuthToken(request, response);
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
+                const payload = JSON.parse(response._getData());
+                expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
+                done();
+            });
         });
     });
 

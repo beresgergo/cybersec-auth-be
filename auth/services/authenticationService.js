@@ -26,6 +26,7 @@ module.exports.validateToken = token => {
                 reject(error);
                 return;
             }
+            LOG.info('JWT verification successful.');
             resolve();
         });
     });
