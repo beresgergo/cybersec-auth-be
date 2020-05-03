@@ -4,29 +4,14 @@ const express = require('express');
 const router = express.Router();
 
 const authenticationController = require('../controllers/authenticationController');
-const registrationController = require('../controllers/registrationController');
-const sessionController = require('../controllers/sessionController');
+const userController = require('../controllers/userController');
 
-
-router.get('/user/:username',
-    sessionController.createSession,
-    registrationController.checkUsername);
-
-router.delete('/user/:username',
+router.delete('/user',
     authenticationController.verifyToken,
-    registrationController.deleteUser);
+    userController.deleteUser);
 
-router.post('/user/:username/totpSecret',
-    sessionController.populateSession,
-    registrationController.totpSecret);
-
-router.post('/user/:username/publicKey',
-    sessionController.populateSession,
-    registrationController.publicKey);
-
-router.post('/user/:username/finalize',
-    sessionController.populateSession,
-    sessionController.removeSession,
-    registrationController.finalize);
+router.post('/user/preferredAuthType',
+    authenticationController.verifyToken,
+    userController.changePreferredAuthenticationType);
 
 module.exports = router;

@@ -20,8 +20,8 @@ module.exports.MONGOOSE_OPTIONS = {
 };
 
 module.exports.CREDENTIALS= {
-    key: fs.readFileSync('/var/opt/certs/cyberauth_registration.key'),
-    cert: fs.readFileSync('/var/opt/certs/cyberauth_registration.crt'),
+    key: fs.readFileSync('/var/opt/certs/cyberauth_user.key'),
+    cert: fs.readFileSync('/var/opt/certs/cyberauth_user.crt'),
     ca: fs.readFileSync('/var/opt/certs/cyberauth_ca.crt'),
     requestCert: true,
     rejectUnauthorized: true

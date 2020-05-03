@@ -2,7 +2,7 @@
 
 module.exports.createModelMock = (model) => {
     const ModelMock = function(opts) {
-        return {
+        return Object.assign(model, {
             save: function(cb) {
                 if (!cb) {
                     return {
@@ -11,7 +11,7 @@ module.exports.createModelMock = (model) => {
                 }
                 cb(null, opts);
             }
-        };
+        });
     };
 
     ModelMock.findOne = function (prop, cb) {
@@ -24,8 +24,7 @@ module.exports.createModelMock = (model) => {
             return {
                 then: cb => {
                     if (prop.username === 'username') {
-                        cb(model);
-                        return;
+                        return cb(ModelMock(model));
                     }
                     return cb(null);
                 }

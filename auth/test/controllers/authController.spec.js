@@ -37,8 +37,9 @@ mockery.registerMock(cryptoMock.moduleName, cryptoMock);
 
 mockery.registerMock('../models/userStore', modelMockBuilder.createModelMock({
     username: 'username',
-    password: '',
-    publicKey: ''
+    totpSecret: '',
+    publicKey: '',
+    preferredAuthType: String
 }));
 
 mockery.registerMock(authenticationServiceMock.moduleName, authenticationServiceMock);
