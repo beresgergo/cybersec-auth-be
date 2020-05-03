@@ -64,3 +64,21 @@ jobs:
         run: cd registration && npm audit
       - name: Execute eslint on registration component
         run: cd registration && npm run lint
+  userservice-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install npm dependencies for user service component
+        run: cd user && npm install
+      - name: Execute tests for user service component
+        run: cd user && npm test
+      - name: Execute coverage report for user service component
+        run: cd user && npm run coverage
+      - name: Execute npm audit on user service component
+        run: cd user && npm audit
+      - name: Execute eslint on user service component
+        run: cd user && npm run lint

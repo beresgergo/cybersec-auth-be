@@ -21,3 +21,10 @@ update_configs:
   - package_manager: "docker"
     directory: "/registration"
     update_schedule: "weekly"
+  # update packages and dockerfile in userservice component weekly
+  - package_manager: "javascript"
+    directory: "/user"
+    update_schedule: "weekly"
+  - package_manager: "docker"
+    directory: "/user"
+    update_schedule: "weekly"
