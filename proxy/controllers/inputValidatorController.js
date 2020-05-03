@@ -7,6 +7,7 @@ const validator = require('validator');
 
 const BLACKLIST = '\\[\\]<>\\*';
 const ZERO = 0;
+const FOUR = 4;
 
 function sanitizeInput(input) {
     return validator.blacklist(validator.escape(validator.trim(input)), BLACKLIST);
@@ -21,7 +22,7 @@ function is32BytesLength(input) {
 }
 
 function isUUIDV4(input) {
-    return validator.isUUID(input, 4);
+    return validator.isUUID(input, FOUR);
 }
 
 function inputValidatorFactory(rules) {
@@ -53,7 +54,7 @@ module.exports.userNameValidator = (req, res, next) => {
 
     const result = inputValidator.validate(input);
 
-    if (result.length === ZERO) {;
+    if (result.length === ZERO) {
         res.locals.validated.params.username = sanitizeInput(input);
         next();
         return;

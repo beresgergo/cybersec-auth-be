@@ -101,7 +101,7 @@ describe('InputValidatorController', function() {
 
             inputValidator.setupValidValueHolders(response, response, () => {
                 inputValidator.userNameValidator(request, response, () => {
-                    expect(response.locals.validated.username).to.be.equal('username');
+                    expect(response.locals.validated.params.username).to.be.equal('username');
                     done();
                 });
             });
@@ -158,7 +158,57 @@ describe('InputValidatorController', function() {
             });
 
         });
+    });
 
+    describe('#sessionIdValidator', function() {
+        it('should return HTTP BAD request if the session id is not valid UUIDv4 format', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/totpSecret',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    sessionId: '1'
+                }
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.SESSION_INVALID);
+                done();
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.sessionIdValidator(request, response);
+            });
+        });
+
+
+        it('should return pass the sanitized input to the validated locals object', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/totpSecret',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    sessionId: '53719332-c1cd-443e-b871-b631014407c6'
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.sessionIdValidator(request, response, () => {
+                    expect(response.locals.validated.body.sessionId).to.be.equal(request.body.sessionId);
+                    done();
+                });
+            });
+
+        });
     });
 
     after(function() {
@@ -166,4 +216,3 @@ describe('InputValidatorController', function() {
         mockery.deregisterAll();
     });
 });
-
