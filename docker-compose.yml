@@ -59,6 +59,7 @@ services:
       - ./ssl/cyberauth_registration.crt:/var/opt/certs/cyberauth_registration.crt:ro
       - ./ssl/cyberauth_registration.key:/var/opt/certs/cyberauth_registration.key:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
+      - ./ssl/cyberauth_auth.key:/var/opt/jwt/jwt_signer.pubkey:ro
       - /private/etc/localtime:/etc/localtime:ro
     environment:
       - CONNECTION_STRING=mongodb://credentialstore:27017/

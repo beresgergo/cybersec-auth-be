@@ -162,7 +162,7 @@ module.exports.token = (req, res) => {
     }
 
     authenticationService
-        .createAuthenticationToken()
+        .createAuthenticationToken(session.username)
         .then(token => {
             return res
                 .status(HTTP_CONSTANTS.HTTP_OK)

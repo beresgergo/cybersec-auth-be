@@ -8,9 +8,12 @@ const { createLogger } = require('winston');
 
 const LOG = createLogger(LOGGING_OPTIONS);
 
-module.exports.createAuthenticationToken = () => {
+module.exports.createAuthenticationToken = (username) => {
     return new Promise((resolve, _) => {
-        sign({ status: STATUS_OK }, JWT.privateKey, JWT.options, (_, token) => {
+        sign({
+            status: STATUS_OK,
+            username: username
+        }, JWT.privateKey, JWT.options, (_, token) => {
             LOG.info('Successfully created JWT: ' + token);
             resolve(token);
         });
