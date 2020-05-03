@@ -5,8 +5,10 @@ ssl/cyberauth_auth.*
 ssl/cyberauth_ca.*
 ssl/cyberauth_proxy.*
 ssl/cyberauth_registration.*
+ssl/cyberauth_userservice.*
 ssl/jwt_signer.*
 registration/node_modules
 auth/node_modules
 proxy/node_modules
+user/node_modules
 data/*

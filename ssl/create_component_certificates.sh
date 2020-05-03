@@ -15,6 +15,7 @@ openssl x509 -req -in "$1.csr" -CA cyberauth_ca.crt -CAkey cyberauth_ca.key -CAc
 create_keypair_and_certificate "cyberauth_proxy" "Proxy" "proxy"
 create_keypair_and_certificate "cyberauth_auth" "Authentication" "auth"
 create_keypair_and_certificate "cyberauth_registration" "Registration" "registration"
+create_keypair_and_certificate "cyberauth_user" "User Service" "userservice"
 
 # RSA key for the JWT token signature
 create_keypair_and_certificate "jwt_signer" "Authetnication" "JWT TOKEN SIGNER"
