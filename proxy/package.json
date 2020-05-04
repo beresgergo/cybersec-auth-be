@@ -19,7 +19,7 @@
     "express-winston": "^4.0.3",
     "helmet": "^3.22.0",
     "make-fetch-happen": "^8.0.4",
-    "mongoose": "^5.9.10",
+    "mongoose": "^5.9.11",
     "uuid": "^7.0.3",
     "validator": "^13.0.0",
     "winston": "^3.2.1"
