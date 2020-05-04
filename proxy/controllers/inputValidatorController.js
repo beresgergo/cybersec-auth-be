@@ -17,6 +17,10 @@ function isValidLength(input) {
     return validator.isLength(input, { min: 4, max: 10 });
 }
 
+function isValidPublicKeyLength(input) {
+    return validator.isLength(input, { min: 600, max: 600 });
+}
+
 function is32BytesLength(input) {
     return validator.isByteLength(input, {min: 52, max: 52});
 }
@@ -95,6 +99,27 @@ module.exports.totpValidator = (req, res, next) => {
 
     if (result.length === ZERO) {
         res.locals.validated.body.totpSecret = sanitizeInput(input);
+        next();
+        return;
+    }
+
+    return res.status(HTTP_BAD_REQUEST).json({messages: result});
+};
+
+module.exports.publicKeyValidator = (req, res, next) => {
+    const input = req.body.publicKey;
+    const inputValidator = inputValidatorFactory([{
+        predicate: validator.isBase64,
+        message: MESSAGES.PUBKEY_INVALID_ENCODING
+    },{
+        predicate: isValidPublicKeyLength,
+        message: MESSAGES.PUBKEY_INVALID_SIZE
+    }]);
+
+    const result = inputValidator.validate(input);
+
+    if (result.length === ZERO) {
+        res.locals.validated.body.publicKey = sanitizeInput(input);
         next();
         return;
     }

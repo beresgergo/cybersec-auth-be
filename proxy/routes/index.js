@@ -31,6 +31,7 @@ router.post('/user/:username/publicKey',
     inputValidationController.setupValidValueHolders,
     inputValidationController.userNameValidator,
     inputValidationController.sessionIdValidator,
+    inputValidationController.publicKeyValidator,
     registrationController.publicKey);
 
 router.post('/user/:username/finalize',

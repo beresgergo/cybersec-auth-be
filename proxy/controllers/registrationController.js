@@ -41,7 +41,7 @@ module.exports.totpSecret = (req, res) => {
 
 module.exports.publicKey = (req, res) => {
     const opts = CONFIGURATION.createPublicKeyOptions(res.locals.validated.params.username);
-    opts.opts.body = JSON.stringify(req.body);
+    opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {

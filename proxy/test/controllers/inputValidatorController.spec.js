@@ -6,6 +6,7 @@ const events = require('events');
 const httpMocks = require('node-mocks-http');
 const mockery = require('mockery');
 
+const CONSTANTS = require('../constants/index');
 const HTTP_CONSTANTS = require('../../utils/httpConstants');
 const MESSAGES = require('../../utils/messages');
 
@@ -119,7 +120,7 @@ describe('InputValidatorController', function() {
                     username: 'username'
                 },
                 body: {
-                    totpSecret: '!ZSSOZRABY3WYOBXAAVSY4B2EQYUS4BBGFNVCEQQAUVREISNAU3A'
+                    totpSecret: '!' + CONSTANTS.TOTP_SECRET
                 }
             });
 
@@ -146,7 +147,7 @@ describe('InputValidatorController', function() {
                     username: 'username'
                 },
                 body: {
-                    totpSecret: 'FZSSOZRABY3WYOBXAAVSY4B2EQYUS4BBGFNVCEQQAUVREISNAU3A'
+                    totpSecret: CONSTANTS.TOTP_SECRET
                 }
             });
 
@@ -197,13 +198,63 @@ describe('InputValidatorController', function() {
                     username: 'username'
                 },
                 body: {
-                    sessionId: '53719332-c1cd-443e-b871-b631014407c6'
+                    sessionId: CONSTANTS.SESSION_ID
                 }
             });
 
             inputValidator.setupValidValueHolders(request, response, () => {
                 inputValidator.sessionIdValidator(request, response, () => {
                     expect(response.locals.validated.body.sessionId).to.be.equal(request.body.sessionId);
+                    done();
+                });
+            });
+
+        });
+    });
+
+    describe('#publicKeyValidator', function() {
+        it('should return HTTP BAD request if the public key is not in base64 format', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/publicKey',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    publicKey: CONSTANTS.PUBLIC_KEY
+                }
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.PUBKEY_INVALID_ENCODING);
+                done();
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.publicKeyValidator(request, response);
+            });
+        });
+
+        it('should pass the sanitized input to the validated locals object', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/publicKey',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    publicKey: Buffer.from(CONSTANTS.PUBLIC_KEY).toString('base64')
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.publicKeyValidator(request, response, () => {
+                    expect(response.locals.validated.body.publicKey).to.be.equal(request.body.publicKey);
                     done();
                 });
             });
