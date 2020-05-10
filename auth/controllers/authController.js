@@ -114,7 +114,7 @@ module.exports.generateChallenge = (req, res) => {
 
 module.exports.checkSignature = (req, res) => {
     const session = res.locals.session;
-    const signedChallenge = req.body.signedChallenge;
+    const encodedSignedChallenge = req.body.signedChallenge;
 
     if (!session.challenge) {
         res
@@ -128,6 +128,7 @@ module.exports.checkSignature = (req, res) => {
         .then(result => {
             const verify = createVerify('SHA256');
             verify.update(session.challenge);
+            const signedChallenge = Buffer.from(encodedSignedChallenge, 'base64').toString('utf8');
             const success = verify.verify({
                 key: Buffer.from(result.publicKey, 'base64').toString('utf8'),
                 padding: constants.RSA_PKCS1_PSS_PADDING

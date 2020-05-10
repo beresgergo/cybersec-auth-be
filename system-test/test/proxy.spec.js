@@ -156,11 +156,12 @@ describe('Proxy', function () {
                     const signedChallenge = sign.sign({
                         key: RSA.PRIVATE_KEY,
                         padding: constants.RSA_PKCS1_PSS_PADDING}, RSA.ENCODING);
+                    console.log(Buffer.from(signedChallenge).toString('base64').length);
                     return requester.post('/login/signedChallenge')
                         .type('json')
                         .send({
                             sessionId: sessionId,
-                            signedChallenge: signedChallenge
+                            signedChallenge: Buffer.from(signedChallenge).toString('base64')
                         });
                 }).then(res => {
                     expect(res.status).to.be.eq(200);
@@ -204,7 +205,7 @@ describe('Proxy', function () {
                     .type('json')
                     .send({
                         sessionId: sessionId,
-                        signedChallenge: signedChallenge
+                        signedChallenge: Buffer.from(signedChallenge).toString('base64')
                     });
             }).then(res => {
                 expect(res.status).to.be.eq(200);

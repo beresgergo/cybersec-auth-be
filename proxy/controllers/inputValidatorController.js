@@ -26,6 +26,10 @@ function isValidPublicKeyLength(input) {
     return validator.isLength(input, { min: 600, max: 600 });
 }
 
+function isValidSignatureLength(input) {
+    return validator.isLength(input, { min: 460, max: 460 });
+}
+
 function is32BytesLength(input) {
     return validator.isByteLength(input, {min: 52, max: 52});
 }
@@ -189,6 +193,27 @@ module.exports.totpTokenValidator = (req, res, next) => {
 
     if (result.length === ZERO) {
         res.locals.validated.body.token = sanitizeInput(input);
+        next();
+        return;
+    }
+
+    return res.status(HTTP_BAD_REQUEST).json({messages: result});
+};
+
+module.exports.signedChallengeValidator = (req, res, next) => {
+    const input = req.body.signedChallenge;
+    const inputValidator = inputValidatorFactory([{
+        predicate: validator.isBase64,
+        message: MESSAGES.SIGNATURE_INVALID_ENCODING
+    },{
+        predicate: isValidSignatureLength,
+        message: MESSAGES.SIGNATURE_INVALID_LENGTH
+    }]);
+
+    const result = inputValidator.validate(input);
+
+    if (result.length === ZERO) {
+        res.locals.validated.body.signedChallenge = sanitizeInput(input);
         next();
         return;
     }

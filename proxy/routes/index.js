@@ -19,9 +19,21 @@ router.post('/login/otpToken',
     inputValidationController.totpTokenValidator,
     authenticationController.verifyTotpToken);
 
-router.post('/login/challenge', authenticationController.generateChallenge);
-router.post('/login/signedChallenge', authenticationController.checkSignature);
-router.post('/login/retrieveToken', authenticationController.retrieveToken);
+router.post('/login/challenge',
+    inputValidationController.setupValidValueHolders,
+    inputValidationController.sessionIdValidator,
+    authenticationController.generateChallenge);
+
+router.post('/login/signedChallenge',
+    inputValidationController.setupValidValueHolders,
+    inputValidationController.sessionIdValidator,
+    inputValidationController.signedChallengeValidator,
+    authenticationController.checkSignature);
+
+router.post('/login/retrieveToken',
+    inputValidationController.setupValidValueHolders,
+    inputValidationController.sessionIdValidator,
+    authenticationController.retrieveToken);
 
 // routes for registration
 router.get('/user/:username',

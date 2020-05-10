@@ -128,7 +128,7 @@ describe('InputValidatorController', function() {
                 expect(response._isJSON()).to.be.true;
                 expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
                 const payload = JSON.parse(response._getData());
-                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.TOTP_INVALID);
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.TOTP_SECRET_INVALID);
                 done();
             });
 
@@ -457,6 +457,56 @@ describe('InputValidatorController', function() {
             inputValidator.setupValidValueHolders(request, response, () => {
                 inputValidator.totpTokenValidator(request, response, () => {
                     expect(response.locals.validated.body.token).to.be.equal(request.body.token);
+                    done();
+                });
+            });
+
+        });
+    });
+
+    describe('#signedChallengeValidator', function() {
+        it('should return HTTP BAD request if the public key is not in base64 format', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/login/signedChallenge',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    signedChallenge: ''
+                }
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.SIGNATURE_INVALID_ENCODING);
+                done();
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.signedChallengeValidator(request, response);
+            });
+        });
+
+        it('should pass the sanitized input to the validated locals object', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/login/signedChallenge',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    signedChallenge: CONSTANTS.SIGNED_CHALLENGE
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.signedChallengeValidator(request, response, () => {
+                    expect(response.locals.validated.body.signedChallenge).to.be.equal(request.body.signedChallenge);
                     done();
                 });
             });

@@ -32,6 +32,16 @@ mockery.registerMock('uuid', {
     v4: () => { return '1'; }
 });
 
+mockery.registerMock('Buffer', {
+    from: (_original, _encoding) => {
+        return {
+            toString: (_toEncode) => {
+                return 'buffer';
+            }
+        };
+    }
+});
+
 mockery.registerMock(configurationMock.moduleName, configurationMock);
 mockery.registerMock(cryptoMock.moduleName, cryptoMock);
 
@@ -320,7 +330,7 @@ describe('AuthenticationController', function() {
                 method:'POST',
                 url: '/login/challenge',
                 body: {
-                    signedChallenge: 'OK'
+                    signedChallenge: 'T0s='
                 }
             });
 
