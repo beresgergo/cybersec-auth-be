@@ -12,3 +12,4 @@ module.exports.PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----\n' +
         '-----END PUBLIC KEY-----';
 module.exports.SESSION_ID = '53719332-c1cd-443e-b871-b631014407c6';
 module.exports.TOTP_SECRET = 'FZSSOZRABY3WYOBXAAVSY4B2EQYUS4BBGFNVCEQQAUVREISNAU3A';
+module.exports.TOTP_TOKEN = '123456';

@@ -397,6 +397,73 @@ describe('InputValidatorController', function() {
         });
     });
 
+    describe('#totpTokenValidator', function() {
+        it('should return HTTP BAD request if the token is not a valid TOTP TOKEN', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/login/otpToken',
+                body: {
+                    token: 'not valid token'
+                }
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.TOTP_TOKEN_INVALID);
+                done();
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.totpTokenValidator(request, response);
+            });
+        });
+
+        it('should return HTTP BAD request if the token does not contain 6 digits', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/login/otpToken',
+                body: {
+                    token: '1234567'
+                }
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.TOTP_TOKEN_INVALID_LENGTH);
+                done();
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.totpTokenValidator(request, response);
+            });
+        });
+
+        it('should pass the sanitized input to the validated locals object', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/login/otpToken',
+                body: {
+                    token: CONSTANTS.TOTP_TOKEN
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.totpTokenValidator(request, response, () => {
+                    expect(response.locals.validated.body.token).to.be.equal(request.body.token);
+                    done();
+                });
+            });
+
+        });
+    });
+
     after(function() {
         mockery.disable();
         mockery.deregisterAll();

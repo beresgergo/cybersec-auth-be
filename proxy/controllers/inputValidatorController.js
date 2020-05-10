@@ -18,6 +18,10 @@ function isValidLength(input) {
     return validator.isLength(input, { min: 4, max: 10 });
 }
 
+function isValidTotpTokenlength(input) {
+    return validator.isLength(input, { min: 6, max: 6 });
+}
+
 function isValidPublicKeyLength(input) {
     return validator.isLength(input, { min: 600, max: 600 });
 }
@@ -94,10 +98,10 @@ module.exports.totpValidator = (req, res, next) => {
     const input = req.body.totpSecret;
     const inputValidator = inputValidatorFactory([{
         predicate: validator.isAlphanumeric,
-        message: MESSAGES.TOTP_INVALID
+        message: MESSAGES.TOTP_SECRET_INVALID
     },{
         predicate: is32BytesLength,
-        message:  MESSAGES.TOTP_INVALID
+        message:  MESSAGES.TOTP_SECRET_INVALID
     }]);
 
     const result = inputValidator.validate(input);
@@ -157,6 +161,28 @@ module.exports.jwtStringValidator = (req, res, next) => {
     const inputValidator = inputValidatorFactory([{
         predicate: validator.isJWT,
         message: MESSAGES.JWT_INVALID
+    }]);
+
+    const result = inputValidator.validate(input);
+
+    if (result.length === ZERO) {
+        res.locals.validated.body.token = sanitizeInput(input);
+        next();
+        return;
+    }
+
+    return res.status(HTTP_BAD_REQUEST).json({messages: result});
+};
+
+module.exports.totpTokenValidator = (req, res, next) => {
+    const input = req.body.token;
+
+    const inputValidator = inputValidatorFactory([{
+        predicate: validator.isNumeric,
+        message: MESSAGES.TOTP_TOKEN_INVALID
+    },{
+        predicate: isValidTotpTokenlength,
+        message: MESSAGES.TOTP_TOKEN_INVALID_LENGTH
     }]);
 
     const result = inputValidator.validate(input);

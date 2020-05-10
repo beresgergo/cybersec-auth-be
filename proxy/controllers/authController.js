@@ -8,7 +8,7 @@ const { HTTP_OK } = require('../utils/httpConstants');
 const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
 
 module.exports.startAuthentication = (req, res) => {
-    const opts = CONFIGURATION.createAuthenticationStartOptions(req.params.username);
+    const opts = CONFIGURATION.createAuthenticationStartOptions(res.locals.validated.params.username);
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {

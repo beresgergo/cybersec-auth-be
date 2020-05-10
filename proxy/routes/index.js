@@ -8,7 +8,11 @@ const registrationController = require('../controllers/registrationController');
 const userServiceController = require('../controllers/userServiceController');
 
 // routes for login
-router.get('/login/:username', authenticationController.startAuthentication);
+router.get('/login/:username',
+    inputValidationController.setupValidValueHolders,
+    inputValidationController.userNameValidator,
+    authenticationController.startAuthentication);
+
 router.post('/login/otpToken', authenticationController.verifyTotpToken);
 router.post('/login/challenge', authenticationController.generateChallenge);
 router.post('/login/signedChallenge', authenticationController.checkSignature);
@@ -46,6 +50,7 @@ router.delete('/management/user',
     inputValidationController.setupValidValueHolders,
     inputValidationController.jwtStringValidator,
     userServiceController.deleteUser);
+
 router.post('/management/preferredAuthType',
     inputValidationController.setupValidValueHolders,
     inputValidationController.preferredAuthTypeValidator,
