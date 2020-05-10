@@ -18,7 +18,9 @@ module.exports.createSession = (req, res, next) =>  {
     const sessionObj = authenticationSession({
         id: uuid(),
         username: '',
-        password: '',
+        totpDone: false,
+        rsaDone: false,
+        preferredAuthType: '',
         challenge: '',
         valid: validUntil
     });

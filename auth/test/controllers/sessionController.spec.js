@@ -20,7 +20,9 @@ mockery.enable({
 mockery.registerMock('../models/sessionStore', modelMockBuilder.createModelMock({
     id: '1',
     username: 'username',
-    password: 'password',
+    totpDone: false,
+    rsaDone: false,
+    preferredAuthType: 'preferredAuthType',
     challenge: 'challenge'
 }));
 
@@ -47,8 +49,10 @@ describe('SessionController', function() {
                 expect(session).to.be.an('Object');
                 expect(session.id).to.equal('1');
                 expect(session.username).to.be.equal('');
-                expect(session.password).to.be.equal('');
+                expect(session.totpDone).to.be.false;
+                expect(session.rsaDone).to.be.false;
                 expect(session.challenge).to.be.equal('');
+                expect(session.preferredAuthType).to.be.equal('');
 
                 done();
             });
@@ -61,7 +65,7 @@ describe('SessionController', function() {
             const request = httpMocks.createRequest({
                 method: 'GET',
                 url: '/user/10',
-                body: { noSessionId: '' }
+                body: { sessionId: '' }
             });
 
             response.on('end', function() {
@@ -105,8 +109,10 @@ describe('SessionController', function() {
                 expect(session).to.be.an('Object');
                 expect(session.id).to.equal('1');
                 expect(session.username).to.be.equal('username');
-                expect(session.password).to.be.equal('password');
+                expect(session.totpDone).to.be.false;
+                expect(session.rsaDone).to.be.false;
                 expect(session.challenge).to.be.equal('challenge');
+                expect(session.preferredAuthType).to.be.equal('preferredAuthType');
 
                 done();
             });
@@ -119,7 +125,7 @@ describe('SessionController', function() {
             const request = httpMocks.createRequest({
                 method: 'GET',
                 url: '/user/10',
-                body: { noSessionId: '' }
+                body: { sessionId: '' }
             });
 
             response.on('end', function() {

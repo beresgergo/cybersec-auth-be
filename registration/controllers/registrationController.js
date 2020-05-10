@@ -91,11 +91,3 @@ module.exports.finalize = (req, res) => {
             .json({ status: MESSAGES.STATUS_OK });
     });
 };
-
-module.exports.deleteUser = (req, res) => {
-    userStore.deleteOne({ username: res.locals.username }, _ => {
-        res
-            .status(HTTP_CONSTANTS.HTTP_OK)
-            .json({ status: MESSAGES.STATUS_OK });
-    });
-};
