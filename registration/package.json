@@ -20,7 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.11",
     "node-input-validator": "^4.1.0",
-    "uuid": "^7.0.3",
+    "uuid": "^8.0.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
