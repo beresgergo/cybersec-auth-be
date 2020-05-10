@@ -13,7 +13,12 @@ router.get('/login/:username',
     inputValidationController.userNameValidator,
     authenticationController.startAuthentication);
 
-router.post('/login/otpToken', authenticationController.verifyTotpToken);
+router.post('/login/otpToken',
+    inputValidationController.setupValidValueHolders,
+    inputValidationController.sessionIdValidator,
+    inputValidationController.totpTokenValidator,
+    authenticationController.verifyTotpToken);
+
 router.post('/login/challenge', authenticationController.generateChallenge);
 router.post('/login/signedChallenge', authenticationController.checkSignature);
 router.post('/login/retrieveToken', authenticationController.retrieveToken);

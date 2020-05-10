@@ -25,7 +25,7 @@ module.exports.startAuthentication = (req, res) => {
 
 module.exports.verifyTotpToken = (req, res) => {
     const opts = CONFIGURATION.postTotpTokenOptions;
-    opts.opts.body = JSON.stringify(req.body);
+    opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {

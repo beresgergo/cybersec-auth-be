@@ -10,4 +10,3 @@ module.exports.TOTP_TOKEN_INVALID = 'TOTP token should contain only numbers';
 module.exports.TOTP_TOKEN_INVALID_LENGTH = 'TOTP token should contain 6 digits';
 module.exports.USERNAME_INVALID_CHARACTERS = 'Username can only contain alphanumeric characters';
 module.exports.USERNAME_INVALID_LENGTH = 'Name should be between 4 and 10 characters';
-
