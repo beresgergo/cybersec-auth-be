@@ -18,8 +18,7 @@ module.exports.createSession = (req, res, next) =>  {
     const sessionObj = registrationSession({
         id: uuid(),
         username: '',
-        setPassword: '',
-        confirmPassword: '',
+        totpSecret: '',
         publicKey: '',
         valid: validUntil
     });

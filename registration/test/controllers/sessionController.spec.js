@@ -20,8 +20,8 @@ mockery.enable({
 mockery.registerMock('../models/sessionStore', modelMockBuilder.createModelMock({
     id: '1',
     username: 'username',
-    setPassword: 'password',
-    confirmPassword: 'password'
+    totpSecret: 'totpSecret',
+    publicKey: 'base64EncodedPublicKey'
 }));
 
 mockery.registerMock('uuid', {
@@ -47,8 +47,8 @@ describe('SessionController', function() {
                 expect(session).to.be.an('Object');
                 expect(session.id).to.equal('1');
                 expect(session.username).to.be.equal('');
-                expect(session.setPassword).to.be.equal('');
-                expect(session.confirmPassword).to.be.equal('');
+                expect(session.totpSecret).to.be.equal('');
+                expect(session.publicKey).to.be.equal('');
 
                 done();
             });
@@ -105,8 +105,8 @@ describe('SessionController', function() {
                 expect(session).to.be.an('Object');
                 expect(session.id).to.equal('1');
                 expect(session.username).to.be.equal('username');
-                expect(session.setPassword).to.be.equal('password');
-                expect(session.confirmPassword).to.be.equal('password');
+                expect(session.totpSecret).to.be.equal('totpSecret');
+                expect(session.publicKey).to.be.equal('base64EncodedPublicKey');
 
                 done();
             });

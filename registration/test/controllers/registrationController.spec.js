@@ -144,7 +144,7 @@ describe('Registration Controller', function() {
                     username: 'username'
                 },
                 body: {
-                    encoded: 'base64EncodedPublicKey'
+                    publicKey: 'base64EncodedPublicKey'
                 }
             });
 
@@ -170,7 +170,7 @@ describe('Registration Controller', function() {
                     username: 'username'
                 },
                 body: {
-                    encoded: 'base64EncodedPublicKey'
+                    publicKey: 'base64EncodedPublicKey'
                 }
             });
 
@@ -222,7 +222,7 @@ describe('Registration Controller', function() {
                 }
             });
 
-            response.locals.session = createSessionMock({ publicKey : 'publicKey' });
+            response.locals.session = createSessionMock({ publicKey : 'base64EncodedPublicKey' });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
