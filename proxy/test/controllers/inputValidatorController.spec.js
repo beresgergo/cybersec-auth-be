@@ -465,7 +465,7 @@ describe('InputValidatorController', function() {
     });
 
     describe('#signedChallengeValidator', function() {
-        it('should return HTTP BAD request if the public key is not in base64 format', function (done) {
+        it('should return HTTP BAD request if the signature is not in base64 format', function (done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({
                 method: 'POST',
