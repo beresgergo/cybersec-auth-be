@@ -21,7 +21,7 @@ services:
       - ./ssl/cyberauth_proxy.crt:/var/opt/certs/cyberauth_proxy.crt:ro
       - ./ssl/cyberauth_proxy.key:/var/opt/certs/cyberauth_proxy.key:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
-      - /private/etc/localtime:/etc/localtime:ro
+      #- /private/etc/localtime:/etc/localtime:ro
     environment:
       - CONNECTION_STRING=mongodb://credentialstore:27017/
   auth:
@@ -42,7 +42,7 @@ services:
       - ./ssl/jwt_signer.key:/var/opt/jwt/jwt_signer.key:ro
       - ./ssl/jwt_signer.pubkey:/var/opt/jwt/jwt_signer.pubkey:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
-      - /private/etc/localtime:/etc/localtime:ro
+      #- /private/etc/localtime:/etc/localtime:ro
     environment:
       - CONNECTION_STRING=mongodb://credentialstore:27017/
   registration:
@@ -62,7 +62,7 @@ services:
       - ./ssl/cyberauth_registration.key:/var/opt/certs/cyberauth_registration.key:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
       - ./ssl/jwt_signer.pubkey:/var/opt/jwt/jwt_signer.pubkey:ro
-      - /private/etc/localtime:/etc/localtime:ro
+      #- /private/etc/localtime:/etc/localtime:ro
     environment:
       - CONNECTION_STRING=mongodb://credentialstore:27017/
   userservice:
@@ -82,19 +82,19 @@ services:
       - ./ssl/cyberauth_registration.key:/var/opt/certs/cyberauth_user.key:ro
       - ./ssl/cyberauth_ca.crt:/var/opt/certs/cyberauth_ca.crt:ro
       - ./ssl/jwt_signer.pubkey:/var/opt/jwt/jwt_signer.pubkey:ro
-      - /private/etc/localtime:/etc/localtime:ro
+      #- /private/etc/localtime:/etc/localtime:ro
     environment:
       - CONNECTION_STRING=mongodb://credentialstore:27017/
   credentialstore:
-      networks:
-        - node_net
-      image: mongo
-      container_name: cyber-auth-be-credentialstore
-      ports:
-        - "27017:27017"
-      volumes:
-        - ./data/db:/data/db
-        - /private/etc/localtime:/etc/localtime:ro
+    networks:
+      - node_net
+    image: mongo
+    container_name: cyber-auth-be-credentialstore
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
+      #- /private/etc/localtime:/etc/localtime:ro
 networks:
   node_net:
     driver: bridge

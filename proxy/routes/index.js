@@ -38,6 +38,7 @@ router.post('/user/:username/finalize',
     inputValidationController.setupValidValueHolders,
     inputValidationController.userNameValidator,
     inputValidationController.sessionIdValidator,
+    inputValidationController.preferredAuthTypeValidator,
     registrationController.finalize);
 
 // routes for user service

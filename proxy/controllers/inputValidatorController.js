@@ -5,6 +5,7 @@ const { HTTP_BAD_REQUEST } = require('../utils/httpConstants');
 
 const validator = require('validator');
 
+const AUTH_TYPE_WHITELIST = Object.freeze(new Set(['MFA', 'RSA', 'TOTP']));
 const BLACKLIST = '\\[\\]<>\\*';
 const ZERO = 0;
 const FOUR = 4;
@@ -37,6 +38,10 @@ function inputValidatorFactory(rules) {
                 .map(rule => rule.message);
         }
     };
+}
+
+function isAuthTypeSupported(authType) {
+    return AUTH_TYPE_WHITELIST.has(authType);
 }
 
 module.exports.setupValidValueHolders = (_, res, next) => {
@@ -120,6 +125,25 @@ module.exports.publicKeyValidator = (req, res, next) => {
 
     if (result.length === ZERO) {
         res.locals.validated.body.publicKey = sanitizeInput(input);
+        next();
+        return;
+    }
+
+    return res.status(HTTP_BAD_REQUEST).json({messages: result});
+};
+
+module.exports.preferredAuthTypeValidator = (req, res, next) => {
+    const input = req.body.preferredAuthType;
+
+    const inputValidator = inputValidatorFactory([{
+        predicate: isAuthTypeSupported,
+        message: MESSAGES.PREFERRED_AUTH_TYPE_INVALID
+    }]);
+
+    const result = inputValidator.validate(input);
+
+    if (result.length === ZERO) {
+        res.locals.validated.body.preferredAuthType = sanitizeInput(input);
         next();
         return;
     }

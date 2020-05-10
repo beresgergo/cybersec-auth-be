@@ -262,6 +262,97 @@ describe('InputValidatorController', function() {
         });
     });
 
+    describe('preferredAuthTypeValidator', function () {
+        it('should accept TOTP as preferred authentication types', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/finalize',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    preferredAuthType: 'TOTP'
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.preferredAuthTypeValidator(request, response, () => {
+                    expect(response.locals.validated.body.preferredAuthType).to.be.equal(request.body.preferredAuthType);
+                    done();
+                });
+            });
+        });
+
+        it('should accept RSA as preferred authentication types', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/finalize',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    preferredAuthType: 'RSA'
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.preferredAuthTypeValidator(request, response, () => {
+                    expect(response.locals.validated.body.preferredAuthType).to.be.equal(request.body.preferredAuthType);
+                    done();
+                });
+            });
+        });
+
+        it('should accept MFA as preferred authentication types', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/finalize',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    preferredAuthType: 'MFA'
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.preferredAuthTypeValidator(request, response, () => {
+                    expect(response.locals.validated.body.preferredAuthType).to.be.equal(request.body.preferredAuthType);
+                    done();
+                });
+            });
+        });
+
+        it('should not accept anything else as preferred authentication types', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/user/:username/finalize',
+                params: {
+                    username: 'username'
+                },
+                body: {
+                    preferredAuthType: 'TOTP1'
+                }
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.PREFERRED_AUTH_TYPE_INVALID);
+                done();
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.preferredAuthTypeValidator(request, response);
+            });
+        });
+    });
+
     after(function() {
         mockery.disable();
         mockery.deregisterAll();
