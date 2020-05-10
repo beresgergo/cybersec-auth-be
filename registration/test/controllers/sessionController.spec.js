@@ -61,7 +61,7 @@ describe('SessionController', function() {
             const request = httpMocks.createRequest({
                 method: 'GET',
                 url: '/user/10',
-                body: { noSessionId: '' }
+                body: { sessionId: '' }
             });
 
             response.on('end', function() {
@@ -74,7 +74,7 @@ describe('SessionController', function() {
             sessionController.populateSession(request, response);
         });
 
-        it('should return HTTP BAD REQUEST if the sessionIs is not found in the store', function(done) {
+        it('should return HTTP BAD REQUEST if the sessionId is not found in the store', function(done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({
                 method: 'GET',
