@@ -9,7 +9,7 @@ const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DE
 
 module.exports.deleteUser = (req, res) => {
     const opts = CONFIGURATION.deleteUserOptions;
-    opts.opts.body = JSON.stringify(req.body);
+    opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {
@@ -25,7 +25,7 @@ module.exports.deleteUser = (req, res) => {
 
 module.exports.changePreferredAuthType = (req, res) => {
     const opts = CONFIGURATION.changePreferredAuthType;
-    opts.opts.body = JSON.stringify(req.body);
+    opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
         if (!response.ok) {

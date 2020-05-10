@@ -42,7 +42,14 @@ router.post('/user/:username/finalize',
     registrationController.finalize);
 
 // routes for user service
-router.delete('/management/user', userServiceController.deleteUser);
-router.post('/management/preferredAuthType', userServiceController.changePreferredAuthType);
+router.delete('/management/user',
+    inputValidationController.setupValidValueHolders,
+    inputValidationController.jwtStringValidator,
+    userServiceController.deleteUser);
+router.post('/management/preferredAuthType',
+    inputValidationController.setupValidValueHolders,
+    inputValidationController.preferredAuthTypeValidator,
+    inputValidationController.jwtStringValidator,
+    userServiceController.changePreferredAuthType);
 
 module.exports = router;

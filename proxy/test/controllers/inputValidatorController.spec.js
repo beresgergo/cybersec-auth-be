@@ -353,6 +353,50 @@ describe('InputValidatorController', function() {
         });
     });
 
+    describe('#jwtStringValidator', function() {
+        it('should return HTTP BAD request if the token is not a valid JWT String', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/management/preferredAuthType',
+                body: {
+                    token: ''
+                }
+            });
+
+            response.on('end', () => {
+                expect(response._isJSON()).to.be.true;
+                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
+                const payload = JSON.parse(response._getData());
+                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.JWT_INVALID);
+                done();
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.jwtStringValidator(request, response);
+            });
+        });
+
+        it('should pass the sanitized input to the validated locals object', function (done) {
+            const response = buildResponse();
+            const request = httpMocks.createRequest({
+                method: 'POST',
+                url: '/management/preferredAuthType',
+                body: {
+                    token: CONSTANTS.JWT
+                }
+            });
+
+            inputValidator.setupValidValueHolders(request, response, () => {
+                inputValidator.jwtStringValidator(request, response, () => {
+                    expect(response.locals.validated.body.token).to.be.equal(request.body.token);
+                    done();
+                });
+            });
+
+        });
+    });
+
     after(function() {
         mockery.disable();
         mockery.deregisterAll();

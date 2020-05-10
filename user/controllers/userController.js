@@ -15,7 +15,7 @@ module.exports.deleteUser = (req, res) => {
 
 module.exports.changePreferredAuthenticationType = (req, res) => {
     const username = res.locals.username;
-    const newAuthType = req.body.newAuthType;
+    const newAuthType = req.body.preferredAuthType;
 
     userStore
         .findOne({ username: username })

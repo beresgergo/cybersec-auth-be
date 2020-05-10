@@ -150,3 +150,22 @@ module.exports.preferredAuthTypeValidator = (req, res, next) => {
 
     return res.status(HTTP_BAD_REQUEST).json({messages: result});
 };
+
+module.exports.jwtStringValidator = (req, res, next) => {
+    const input = req.body.token;
+
+    const inputValidator = inputValidatorFactory([{
+        predicate: validator.isJWT,
+        message: MESSAGES.JWT_INVALID
+    }]);
+
+    const result = inputValidator.validate(input);
+
+    if (result.length === ZERO) {
+        res.locals.validated.body.token = sanitizeInput(input);
+        next();
+        return;
+    }
+
+    return res.status(HTTP_BAD_REQUEST).json({messages: result});
+};

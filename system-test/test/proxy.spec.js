@@ -122,7 +122,7 @@ describe('Proxy', function () {
                     .type('json')
                     .send({
                         token: jwt,
-                        newAuthType: AUTH_TYPE.RSA
+                        preferredAuthType: AUTH_TYPE.RSA
                     });
             }).then(res => {
                 expect(res.status).to.be.eq(200);
