@@ -4,6 +4,7 @@ const AUTHENTICATION_CONSTANTS = require('../../utils/authenticationConstants');
 const HTTP_CONSTANTS = require('../../utils/httpConstants');
 const MESSAGES = require('../../utils/messages');
 
+const { describe, it } = require('mocha');
 const chai = require('chai');
 const expect = chai.expect;
 const events = require('events');
@@ -60,8 +61,6 @@ describe('AuthenticationController', function() {
                     username: 'username1'
                 }
             });
-
-            response.locals.session = createSessionMock({id: '1'});
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -250,7 +249,10 @@ describe('AuthenticationController', function() {
                 url: '/login/challenge'
             });
 
-            response.locals.session = createSessionMock({ id: '1', username : 'username'});
+            response.locals.session = createSessionMock({
+                id: '1',
+                username : 'username'
+            });
 
             response.on('end', () => {
                 expect(response._isJSON()).to.be.true;
@@ -312,7 +314,7 @@ describe('AuthenticationController', function() {
             authenticationController.checkSignature(request, response);
         });
 
-        it('should return HTTP OK with authentication token if the verification succeed.', function(done) {
+        it('should return HTTP OK if the verification succeed and save it to the session', function(done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({
                 method:'POST',
