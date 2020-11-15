@@ -111,33 +111,6 @@ describe('InputValidatorController', function() {
     });
 
     describe('#totpValidator', function() {
-        it('should return HTTP BAD request if the totpSecret is not base32 encoded', function(done) {
-            const response = buildResponse();
-            const request = httpMocks.createRequest({
-                method: 'POST',
-                url: '/user/:username/totpSecret',
-                params: {
-                    username: 'username'
-                },
-                body: {
-                    totpSecret: '!' + CONSTANTS.TOTP_SECRET
-                }
-            });
-
-            response.on('end', () => {
-                expect(response._isJSON()).to.be.true;
-                expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_BAD_REQUEST);
-                const payload = JSON.parse(response._getData());
-                expect(payload.messages[ZERO]).to.be.equal(MESSAGES.TOTP_SECRET_INVALID);
-                done();
-            });
-
-            inputValidator.setupValidValueHolders(request, response, () => {
-                inputValidator.totpValidator(request, response);
-            });
-        });
-
-
         it('should return pass the sanitized input to the validated locals object', function(done) {
             const response = buildResponse();
             const request = httpMocks.createRequest({

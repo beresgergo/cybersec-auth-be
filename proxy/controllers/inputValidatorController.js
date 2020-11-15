@@ -100,13 +100,7 @@ module.exports.sessionIdValidator = (req, res, next) => {
 
 module.exports.totpValidator = (req, res, next) => {
     const input = req.body.totpSecret;
-    const inputValidator = inputValidatorFactory([{
-        predicate: validator.isAlphanumeric,
-        message: MESSAGES.TOTP_SECRET_INVALID
-    },{
-        predicate: is32BytesLength,
-        message:  MESSAGES.TOTP_SECRET_INVALID
-    }]);
+    const inputValidator = inputValidatorFactory([]);
 
     const result = inputValidator.validate(input);
 
