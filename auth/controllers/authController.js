@@ -107,6 +107,7 @@ module.exports.generateChallenge = (req, res) => {
             res
                 .status(HTTP_CONSTANTS.HTTP_OK)
                 .json({
+                    status: MESSAGES.STATUS_OK,
                     challenge: session.challenge
                 });
         });
@@ -146,7 +147,7 @@ module.exports.checkSignature = (req, res) => {
                 return res
                     .status(HTTP_CONSTANTS.HTTP_OK)
                     .json({
-                        message: MESSAGES.STATUS_OK
+                        status: MESSAGES.STATUS_OK
                     });
             });
         });

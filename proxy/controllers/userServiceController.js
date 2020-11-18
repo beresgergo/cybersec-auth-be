@@ -12,14 +12,15 @@ module.exports.deleteUser = (req, res) => {
     opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
-        if (!response.ok) {
-            handleHttpError(response, res);
-        }
         return response.json();
     }).then(body => {
-        return res
-            .status(HTTP_OK)
-            .json(body);
+        if (!body.message) {
+            return res
+                .status(HTTP_OK)
+                .json(body);
+        }
+
+        return res.status(HTTP_BAD_REQUEST).json(body);
     });
 };
 
@@ -28,13 +29,14 @@ module.exports.changePreferredAuthType = (req, res) => {
     opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
-        if (!response.ok) {
-            handleHttpError(response, res);
-        }
         return response.json();
     }).then(body => {
-        return res
-            .status(HTTP_OK)
-            .json(body);
+        if (!body.message) {
+            return res
+                .status(HTTP_OK)
+                .json(body);
+        }
+
+        return res.status(HTTP_BAD_REQUEST).json(body);
     });
 };

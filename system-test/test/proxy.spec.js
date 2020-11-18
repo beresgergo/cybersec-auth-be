@@ -165,7 +165,7 @@ describe('Proxy', function () {
                         });
                 }).then(res => {
                     expect(res.status).to.be.eq(200);
-                    expect(res.body.message).to.be.equal('OK');
+                    expect(res.body.status).to.be.equal('OK');
                     return requester.post('/login/retrieveToken')
                         .type('json')
                         .send({ sessionId: sessionId });
@@ -209,7 +209,7 @@ describe('Proxy', function () {
                     });
             }).then(res => {
                 expect(res.status).to.be.eq(200);
-                expect(res.body.message).to.be.equal('OK');
+                expect(res.body.status).to.be.equal('OK');
                 return requester.post('/login/retrieveToken')
                     .type('json')
                     .send({ sessionId: sessionId });

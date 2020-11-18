@@ -4,7 +4,7 @@ const winston = require('winston');
 const { LOGGING_OPTIONS } = require('../config/index');
 const LOG = winston.createLogger(LOGGING_OPTIONS);
 
-module.exports.handleHttpError = (response, res) => {
+module.exports.handleHttpError = (body, res) => {
     response
         .json()
         .then(body => {

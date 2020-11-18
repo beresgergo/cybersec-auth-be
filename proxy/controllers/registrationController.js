@@ -2,8 +2,7 @@
 
 const CONFIGURATION = require('../config/index');
 
-const { handleHttpError } = require('../utils/httpHelpers');
-const { HTTP_OK } = require('../utils/httpConstants');
+const { HTTP_OK, HTTP_BAD_REQUEST } = require('../utils/httpConstants');
 
 const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
 
@@ -11,14 +10,15 @@ module.exports.checkUsername = (req, res) => {
     const opts = CONFIGURATION.createCheckUsernameOptions(res.locals.validated.params.username);
 
     fetch(opts.url, opts.opts).then(response => {
-        if (!response.ok) {
-            handleHttpError(response, res);
-        }
         return response.json();
     }).then(body => {
-        return res
-            .status(HTTP_OK)
-            .json(body);
+        if (!body.message) {
+            return res
+                .status(HTTP_OK)
+                .json(body);
+        }
+
+        return res.status(HTTP_BAD_REQUEST).json(body);
     });
 };
 
@@ -27,15 +27,16 @@ module.exports.totpSecret = (req, res) => {
     opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
-        if (!response.ok) {
-            handleHttpError(response, res);
-        }
-
         return response.json();
     }).then(body => {
-        return res
-            .status(HTTP_OK)
-            .json(body);
+        if (!body.message) {
+            return res
+                .status(HTTP_OK)
+                .json(body);
+        }
+
+        return res.status(HTTP_BAD_REQUEST).json(body);
+
     });
 };
 
@@ -44,15 +45,16 @@ module.exports.publicKey = (req, res) => {
     opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
-        if (!response.ok) {
-            handleHttpError(response, res);
-        }
-
         return response.json();
     }).then(body => {
-        return res
-            .status(HTTP_OK)
-            .json(body);
+        if (!body.message) {
+            return res
+                .status(HTTP_OK)
+                .json(body);
+        }
+
+        return res.status(HTTP_BAD_REQUEST).json(body);
+
     });
 };
 
@@ -61,14 +63,15 @@ module.exports.finalize = (req, res) => {
     opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
-        if (!response.ok) {
-            handleHttpError(response, res);
-        }
-
         return response.json();
     }).then(body => {
-        return res
-            .status(HTTP_OK)
-            .json(body);
+        if (!body.message) {
+            return res
+                .status(HTTP_OK)
+                .json(body);
+        }
+
+        return res.status(HTTP_BAD_REQUEST).json(body);
+
     });
 };

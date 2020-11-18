@@ -22,14 +22,6 @@ function isValidTotpTokenlength(input) {
     return validator.isLength(input, { min: 6, max: 6 });
 }
 
-function isValidPublicKeyLength(input) {
-    return validator.isLength(input, { min: 600, max: 600 });
-}
-
-function isValidSignatureLength(input) {
-    return validator.isLength(input, { min: 460, max: 460 });
-}
-
 function is32BytesLength(input) {
     return validator.isByteLength(input, {min: 52, max: 52});
 }
@@ -118,9 +110,6 @@ module.exports.publicKeyValidator = (req, res, next) => {
     const inputValidator = inputValidatorFactory([{
         predicate: validator.isBase64,
         message: MESSAGES.PUBKEY_INVALID_ENCODING
-    },{
-        predicate: isValidPublicKeyLength,
-        message: MESSAGES.PUBKEY_INVALID_SIZE
     }]);
 
     const result = inputValidator.validate(input);
@@ -199,9 +188,6 @@ module.exports.signedChallengeValidator = (req, res, next) => {
     const inputValidator = inputValidatorFactory([{
         predicate: validator.isBase64,
         message: MESSAGES.SIGNATURE_INVALID_ENCODING
-    },{
-        predicate: isValidSignatureLength,
-        message: MESSAGES.SIGNATURE_INVALID_LENGTH
     }]);
 
     const result = inputValidator.validate(input);
