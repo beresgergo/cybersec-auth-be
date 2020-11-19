@@ -344,7 +344,7 @@ describe('AuthenticationController', function() {
                 expect(response._isJSON()).to.be.true;
                 expect(response.statusCode).to.be.equal(HTTP_CONSTANTS.HTTP_OK);
                 const payload = JSON.parse(response._getData());
-                expect(payload.message).to.be.equal(MESSAGES.STATUS_OK);
+                expect(payload.status).to.be.equal(MESSAGES.STATUS_OK);
                 done();
             });
 

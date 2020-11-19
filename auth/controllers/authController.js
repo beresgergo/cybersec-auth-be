@@ -77,8 +77,9 @@ module.exports.verifyTotpToken = (req, res) => {
                 .then(_ => {
                     res
                         .status(HTTP_CONSTANTS.HTTP_OK)
-                        .json({ status: MESSAGES.STATUS_OK });
+                        .json({status: MESSAGES.STATUS_OK});
                 });
+
         });
 };
 
