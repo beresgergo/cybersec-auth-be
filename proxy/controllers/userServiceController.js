@@ -2,8 +2,7 @@
 
 const CONFIGURATION = require('../config/index');
 
-const { handleHttpError } = require('../utils/httpHelpers');
-const { HTTP_OK } = require('../utils/httpConstants');
+const { HTTP_OK, HTTP_BAD_REQUEST } = require('../utils/httpConstants');
 
 const fetch = require('make-fetch-happen').defaults(CONFIGURATION.HTTP_CLIENT_DEFAULT_CONFIG);
 

@@ -22,9 +22,6 @@ function isValidTotpTokenlength(input) {
     return validator.isLength(input, { min: 6, max: 6 });
 }
 
-function is32BytesLength(input) {
-    return validator.isByteLength(input, {min: 52, max: 52});
-}
 
 function isUUIDV4(input) {
     return validator.isUUID(input, FOUR);
