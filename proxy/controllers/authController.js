@@ -41,6 +41,7 @@ module.exports.verifyTotpToken = (req, res) => {
 
 module.exports.generateChallenge = (req, res) => {
     const opts = CONFIGURATION.generateChallengeOptions;
+
     opts.opts.body = JSON.stringify(res.locals.validated.body);
 
     fetch(opts.url, opts.opts).then(response => {
