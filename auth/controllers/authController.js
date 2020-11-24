@@ -9,7 +9,7 @@ const userStore = require('../models/userStore');
 const authenticationService = require('../services/authenticationService');
 const { isSessionValid } = require('../services/sessionValidatorService');
 
-const { createVerify, constants } = require('crypto');
+const { createVerify } = require('crypto');
 const { totp } = require('otplib');
 const { v4 : uuid } = require('uuid');
 
@@ -128,13 +128,12 @@ module.exports.checkSignature = (req, res) => {
     userStore
         .findOne({ username: session.username })
         .then(result => {
-            const verify = createVerify('SHA256');
+            const verify = createVerify('RSA-SHA256');
             verify.update(session.challenge);
             const signedChallenge = Buffer.from(encodedSignedChallenge, 'base64').toString('utf8');
             const success = verify.verify({
-                key: Buffer.from(result.publicKey, 'base64').toString('utf8'),
-                padding: constants.RSA_PKCS1_PSS_PADDING
-            }, signedChallenge, 'base64');
+                key: Buffer.from(result.publicKey, 'base64').toString('utf8')
+            }, encodedSignedChallenge, 'base64');
 
             if(!success) {
                 res

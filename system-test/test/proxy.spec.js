@@ -2,7 +2,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
 
-const { createSign, constants } = require('crypto');
+const { createSign } = require('crypto');
 const { totp } = require('otplib');
 
 const { TOTP_SECRET, RSA, AUTH_TYPE } = require('../utils/constants');
@@ -153,10 +153,8 @@ describe('Proxy', function () {
                     const challenge = res.body.challenge;
                     const sign = createSign(RSA.SIGNATURE_ALGORITHM);
                     sign.update(challenge);
-                    const signedChallenge = sign.sign({
-                        key: RSA.PRIVATE_KEY,
-                        padding: constants.RSA_PKCS1_PSS_PADDING}, RSA.ENCODING);
-                    console.log(Buffer.from(signedChallenge).toString('base64').length);
+                    const signedChallenge = sign.sign({ key: RSA.PRIVATE_KEY });
+
                     return requester.post('/login/signedChallenge')
                         .type('json')
                         .send({
@@ -199,8 +197,8 @@ describe('Proxy', function () {
                 const sign = createSign(RSA.SIGNATURE_ALGORITHM);
                 sign.update(challenge);
                 const signedChallenge = sign.sign({
-                    key: RSA.PRIVATE_KEY,
-                    padding: constants.RSA_PKCS1_PSS_PADDING}, RSA.ENCODING);
+                    key: RSA.PRIVATE_KEY
+                });
                 return requester.post('/login/signedChallenge')
                     .type('json')
                     .send({

@@ -39,7 +39,7 @@ module.exports.RSA = {
         'qHDNrFj6O6px7+RxbIUeakJZVyYeWizBc73cRXC8z917+9D7X2676LpIk8AFJdUS\n' +
         'f9yijceS42N+1HnI2jX44QcD\n' +
         '-----END PRIVATE KEY-----',
-    SIGNATURE_ALGORITHM: 'SHA256',
+    SIGNATURE_ALGORITHM: 'RSA-SHA256',
     ENCODING: 'base64'
 };
 module.exports.AUTH_TYPE = {

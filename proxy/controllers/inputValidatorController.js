@@ -11,7 +11,7 @@ const ZERO = 0;
 const FOUR = 4;
 
 function sanitizeInput(input) {
-    return validator.blacklist(validator.escape(validator.trim(input)), BLACKLIST);
+    return validator.blacklist(validator.trim(input), BLACKLIST);
 }
 
 function isValidLength(input) {
