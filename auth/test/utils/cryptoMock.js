@@ -6,7 +6,7 @@ module.exports.createVerify = _ => {
     return {
         update: _ => {},
         verify: (_, signature) => {
-            return signature === 'OK';
+            return signature === 'T0s=';
         }
     };
 };
