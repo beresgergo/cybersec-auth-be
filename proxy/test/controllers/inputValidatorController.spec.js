@@ -447,7 +447,7 @@ describe('InputValidatorController', function() {
                     username: 'username'
                 },
                 body: {
-                    signedChallenge: ''
+                    signedChallenge: '#$%'
                 }
             });
 
