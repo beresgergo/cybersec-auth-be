@@ -16,7 +16,7 @@
     "connect-mongo": "^4.4.1",
     "express": "^4.17.1",
     "express-winston": "^4.1.0",
-    "helmet": "^4.4.1",
+    "helmet": "^4.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.2",
     "node-input-validator": "^4.4.0",
