@@ -15,7 +15,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "connect-mongo": "^4.4.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-winston": "^4.1.0",
     "helmet": "^4.6.0",
     "make-fetch-happen": "^8.0.14",
